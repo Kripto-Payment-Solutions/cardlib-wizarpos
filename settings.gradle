@@ -1,0 +1,3 @@
+rootProject.name = "Wizarpos Demo App"
+include ':app'
+include ':cardlib-wizarpos'
