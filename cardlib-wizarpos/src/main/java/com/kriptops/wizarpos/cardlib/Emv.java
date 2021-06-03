@@ -230,6 +230,7 @@ public class Emv {
     }
 
     public int next() {
+        Log.d(Defaults.LOG_TAG, "======> EMV NEXT ");
         return EMVJNIInterface.emv_process_next();
     }
 
@@ -280,6 +281,7 @@ public class Emv {
     private void readAppData() {
         pos.data.maskedPan = this.readTag(0x5A);
         pos.data.track2 = this.readTag(0x57);
+        pos.data.panSequenceNumber = this.readTag(0x5F34);
     }
 
     private void requestPin() {
@@ -293,22 +295,29 @@ public class Emv {
     private void processOnline() {
         TransactionData data = pos.data;
         if ("nfc".equals(data.captureType) || "icc".equals(data.captureType)) {
-            int[] adjustedTagList = new int[taglist.length + 2];
+            int[] adjustedTagList = new int[taglist.length + 3];
             adjustedTagList[0] = 0x57;
             adjustedTagList[1] = 0x5A;
+            adjustedTagList[1] = 0x5F34;
             System.arraycopy(taglist, 0, adjustedTagList, 2, taglist.length);
             data.emvData = readTags(adjustedTagList);
             if (data.emvData.startsWith("57")) {
                 int length = Util.toByteArray(data.emvData.substring(2, 4))[0] * 2;
-                String track2 = data.emvData.substring(4, length);
+                String track2 = data.emvData.substring(4, 4 + length);
                 data.emvData = data.emvData.substring(4 + length);
                 if (data.track2 == null) data.track2 = track2;
             }
             if (data.emvData.startsWith("5A")) {
                 int length = Util.toByteArray(data.emvData.substring(2, 4))[0] * 2;
-                String pan = data.emvData.substring(4, length);
+                String pan = data.emvData.substring(4, 4 + length);
                 data.emvData = data.emvData.substring(4 + length);
                 if (data.maskedPan == null) data.maskedPan = pan;
+            }
+            if (data.emvData.startsWith("5F34")) {
+                int length = Util.toByteArray(data.emvData.substring(4, 6))[0] * 2;
+                String psn = data.emvData.substring(6, 6 + length);
+                data.emvData = data.emvData.substring(6 + length);
+                if (data.panSequenceNumber == null) data.panSequenceNumber = psn;
             }
             if (data.maskedPan == null && data.track2 != null) {
                 data.maskedPan = data.track2.split("[D=]")[0];

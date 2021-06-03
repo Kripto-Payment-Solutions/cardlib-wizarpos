@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         setContentView(R.layout.activity_main);
         this.masterKey = this.findViewById(R.id.txt_llave_master);
         //Setear con la configuracion de la MK de pruebas asignada
-        this.masterKey.setText("");
+        this.masterKey.setText("A283C38D7D7366C6DEFD9B6FFBF45783");
         this.pinKey = this.findViewById(R.id.txt_llave_pin);
         this.dataKey = this.findViewById(R.id.txt_llave_datos);
         this.plainText = this.findViewById(R.id.txt_texto_plano);
@@ -145,11 +145,31 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                 "000000100000", // transaction limit contactless
                 "000000001000" // cvm limit (desde que monto pasan de ser quick a full)
         );
+
         getPos().setPinpadCustomUI(true); // cambia la pantalla de fondo cuando se solicita el uso del pinpad
         getPos().setOnPinRequested(this::onPinRequested);
         getPos().setDigitsListener(this::onPinDigit);
         getPos().setOnPinCaptured(this::onPinCaptured);
 
+        getPos().setTagList(new int[]{
+                0x5f2a,
+                0x82,
+                0x95,
+                0x9a,
+                0x9c,
+                0x9f02,
+                0x9f03,
+                0x9f10,
+                0x9f1a,
+                0x9f26,
+                0x9f27,
+                0x9f33,
+                0x9f34,
+                0x9f35,
+                0x9f36,
+                0x9f37,
+                0x9f40
+        });
         getPos().setOnError(this::onError);
         getPos().setGoOnline(this::online);
         getPos().beginTransaction( // ete metodo se llama en cada transaccion
@@ -194,6 +214,13 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
 
     private void onPinDigit(Integer pinDigits) {
         Log.d(Defaults.LOG_TAG, "cantidad de digitos del pin " + pinDigits);
+        this.runOnUiThread(() -> {
+            if (pinDigits > 0) {
+                this.log.setText("requiriendo el pin " + "********".substring(0, pinDigits));
+            } else {
+                this.log.setText("requiriendo el pin");
+            }
+        });
     }
 
     //TOOL para cifrar en 3DESede ECB NoPadding

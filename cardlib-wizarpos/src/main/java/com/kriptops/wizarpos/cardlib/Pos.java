@@ -81,7 +81,10 @@ public class Pos {
         data.maskedPan = "*******************".substring(0, las4index) + data.maskedPan.substring(las4index, panSize);
         withPinpad((p) -> {
             if (data.track2 != null) data.track2 = p.encryptHex(data.track2);
-            if (data.emvData != null) data.emvData = p.encryptHex(data.emvData);
+            if (data.emvData != null) {
+                data.emvDataClear = data.emvData;
+                data.emvData = p.encryptHex(data.emvData);
+            }
         });
         Log.d(Defaults.LOG_TAG, data.toString());
         //TODO elevar a otro handler de nivel aun mas superior
