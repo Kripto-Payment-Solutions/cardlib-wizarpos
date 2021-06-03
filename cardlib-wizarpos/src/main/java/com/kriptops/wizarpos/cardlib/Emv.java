@@ -406,10 +406,9 @@ public class Emv {
                             case '5': //G&S Pin Mandatory
                             case '6': //NR Pin Feasible
                             case '7': //G&S Pin Feasible
-
+                                Emv.this.requestPin();
                                 return;
                         }
-                        Emv.this.requestPin();
                         //falta decidir si debemos ir al online o a pedir pin, para eso se usa el service code
                         //falta decidir si la tarjeta debe pasar por el chip
                         processOnline();
