@@ -88,7 +88,7 @@ public class Pos {
         });
         Log.d(Defaults.LOG_TAG, data.toString());
         //TODO elevar a otro handler de nivel aun mas superior
-        if(goOnline != null) {
+        if (goOnline != null) {
             goOnline.accept(data);
         } else {
             raiseError("pos", "online_handler_null");
@@ -166,20 +166,47 @@ public class Pos {
         }
     }
 
-    public void beginTransaction(String date, String time, String tsc, String amount) {
+    /**
+     * Inicia una transaccion.
+     *
+     * @param date     fecha en formato YYMM
+     * @param time     hora en formato HHMMSS
+     * @param tsc      contador de transaccion
+     * @param amount   monto en formato ex2, por ejemplo 1000 representa 10.00
+     * @param cashback indica si es una reversa
+     */
+    public void beginTransaction(String date, String time, String tsc, String amount, boolean cashback) {
         emv.reset();
         data = new TransactionData();
         emv.beginTransaction(
                 date,
                 time,
                 tsc,
-                amount
+                amount,
+                cashback
         );
+    }
+
+    /**
+     * Inicia una transaccion.
+     *
+     * @param date   fecha en formato YYMM
+     * @param time   hora en formato HHMMSS
+     * @param tsc    contador de transaccion
+     * @param amount monto en formato ex2, por ejemplo 1000 representa 10.00
+     */
+    public void beginTransaction(String date, String time, String tsc, String amount) {
+        this.beginTransaction(date, time, tsc, amount, false);
     }
 
 
     /// para el control del pinpad
 
+    /**
+     * Accede al uso del pinpad y coordina su ingreso con funciones del pos
+     *
+     * @param pan
+     */
     private void waitForPinpad(String pan) {
         pinpad.open();
 
@@ -195,7 +222,7 @@ public class Pos {
             case OperationResult.SUCCESS:
                 // cuando ha logrado tener el pinblock
                 PINPadOperationResult pinPadOperationResult = (PINPadOperationResult) operationResult;
-                byte [] data = pinPadOperationResult.getEncryptedPINBlock();
+                byte[] data = pinPadOperationResult.getEncryptedPINBlock();
                 String pinblock = Util.toHexString(data);
                 this.data.pinblock = pinblock;
                 if (this.pinpadCustomUI) {
@@ -215,27 +242,33 @@ public class Pos {
                 raiseError("pin", "timeout");
                 break;
             default:
-                raiseError("pin", ""+code);
+                raiseError("pin", "" + code);
                 break;
         }
     }
 
+    /**
+     * Se usa para iniciar el proceso de pedido de pin.
+     */
     public void callPin() {
         if (data.maskedPan == null) this.data.maskedPan = emv.readTag(0x5A);
         String pan = this.data.maskedPan;
         this.waitForPinpad(pan);
     }
 
-    protected void  requestPinToUser() {
-        if(!this.isPinpadCustomUI()) {
-            raiseError("pin","custom_ui_false");
+    protected void requestPinToUser() {
+        if (!this.isPinpadCustomUI()) {
+            raiseError("pin", "custom_ui_false");
         } else if (this.onPinRequested == null) {
-            raiseError("pin","request_handler_null");
+            raiseError("pin", "request_handler_null");
         } else {
             this.onPinRequested.run();
         }
     }
 
+    /**
+     * Se usa para continuar procesando la transaccion despues de pedir el pin.
+     */
     public void continueAfterPin() {
         if ("msr".equals(data.captureType)) {
             processOnline();
@@ -244,15 +277,29 @@ public class Pos {
         }
     }
 
+    /**
+     * Configura el evento de escucha cuando se ha requerido el pin.
+     *
+     * @param onPinRequested
+     */
     public void setOnPinRequested(Runnable onPinRequested) {
         this.onPinRequested = onPinRequested;
     }
 
+    /**
+     * Configura el evento de escucha cuando se ha capturado el pin.
+     *
+     * @param onPinCaptured
+     */
     public void setOnPinCaptured(Runnable onPinCaptured) {
         this.onPinCaptured = onPinCaptured;
     }
 
-
+    /**
+     * Configura el evento de escucha cuando se ha generado un error.
+     *
+     * @param onError
+     */
     public void setOnError(BiConsumer<String, String> onError) {
         this.onError = onError;
     }
@@ -270,14 +317,29 @@ public class Pos {
         return msr;
     }
 
+    /**
+     * Indica que se usara un customUI para controlar el background del pin.
+     *
+     * @param pinpadCustomUI
+     */
     public void setPinpadCustomUI(boolean pinpadCustomUI) {
         this.pinpadCustomUI = pinpadCustomUI;
     }
 
+    /**
+     * Configura el escucha de la cantidad de digitos ingresados del pin.
+     *
+     * @param digitsListener
+     */
     public void setDigitsListener(Consumer<Integer> digitsListener) {
         this.digitsListener = digitsListener;
     }
 
+    /**
+     * Envia la respuesta para poder iniciar el proceso en linea.
+     *
+     * @param goOnline
+     */
     public void setGoOnline(Consumer<TransactionData> goOnline) {
         this.goOnline = goOnline;
     }

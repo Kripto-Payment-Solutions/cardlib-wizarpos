@@ -184,14 +184,19 @@ public class Emv {
      * @param date                       en texto en formato yyMMdd
      * @param time                       en texto en formato HHmmss
      * @param transactionSequenceCounter contador de transaccion en formato 00000000
+     * @param cashback                   indica si es una reversa
      */
-    public void beginTransaction(String date, String time, String transactionSequenceCounter, String amount) {
+    public void beginTransaction(String date, String time, String transactionSequenceCounter, String amount, boolean cashback) {
         EMVJNIInterface.emv_trans_initialize();
         //BIENES Y SERVICIOS
         this.setTag(0x9a, date);
         this.setTag(0x9f21, time);
         this.setTag(0x9f41, transactionSequenceCounter);
-        EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_GOODS_SERVICE);
+        if (cashback) {
+            EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_CASHBACK);
+        } else {
+            EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_GOODS_SERVICE);
+        }
         this.setAmount(amount);
 
         EMVJNIInterface.emv_set_force_online(EMV_READER_ONLINE_ONLY);
