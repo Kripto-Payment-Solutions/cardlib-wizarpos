@@ -50,6 +50,14 @@ public class Pos {
         this.setPinpadCustomUI(false);
     }
 
+    public void setPinLength(int minLen, int maxLen){
+        this.pinpad.setPinLength(minLen, maxLen);
+    }
+
+    public void setPinLength(int lenPin){
+        this.pinpad.setPinLength(lenPin, lenPin);
+    }
+
     public String getSerialNumber() {
         return this.terminal.getTerminalSpec().getSerialNumber();
     }
