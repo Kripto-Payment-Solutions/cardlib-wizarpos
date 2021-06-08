@@ -19,6 +19,8 @@ public class MainApp extends Application implements PosApp {
     public void onCreate() {
         super.onCreate();
         this.pos = new Pos(this);
+        this.pos.setPinLength(4);
+        //this.pos.setPinLength(4, 6);
     }
 
 }

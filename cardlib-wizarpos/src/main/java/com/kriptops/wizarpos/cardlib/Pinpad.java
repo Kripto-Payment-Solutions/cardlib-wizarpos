@@ -17,6 +17,8 @@ import java.io.Closeable;
 public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Closeable {
 
     private static final int PINPAD_ENCRYPT_STRING_MODE_CBC = 1;
+    private int minLenPin = 4;
+    private int maxLenPin = 6;
 
     private int timeout;
 
@@ -28,6 +30,11 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
         this.timeout = timeout;
     }
 
+    public void setPinLength(int minLen, int maxLen){
+        this.minLenPin = minLen;
+        this.maxLenPin = maxLen;
+    };
+
     public boolean setGUIConfiguration(String key, String value) {
         try {
             this.getDevice().setGUIConfiguration(key, value);
@@ -38,7 +45,6 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
             return false;
         }
     }
-
 
     public boolean updateKeys(String pinKeyHex, String dataKeyHex) {
         //TODO Agregar validaciones de parametros
@@ -105,7 +111,7 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
         );
         try {
             this.getDevice().showText(0, "Ingrese su pin en el teclado seguro");
-            this.getDevice().setPINLength(4,6);
+            this.getDevice().setPINLength(this.minLenPin,this.maxLenPin);
             this.getDevice().setupCallbackHandler(new PinPadCallbackHandler() {
                 @Override
                 public void processCallback(byte[] bytes) {
