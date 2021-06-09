@@ -422,6 +422,9 @@ public class Emv {
                 case OperationResult.ERR_TIMEOUT:
                     pos.raiseError("msr", "timeout");
                     break;
+                case OperationResult.CANCEL:
+                    pos.raiseWarning("msr", "read_cancelled");
+                    break;
                 default:
                     pos.raiseError("msr", "" + code);
             }
@@ -442,13 +445,13 @@ public class Emv {
                         case 12:
                             pos.raiseError("emv", "retry");
                             break;
+                        case 47:
+                            pos.raiseError("emv", "terminal_not_initialized");
+                            break;
                         default:
-                            pos.raiseError("emv", "" + code);
+                            pos.raiseError("emv", "process " + code);
                             break;
                     }
-                    // error cerrar los lectores y permitir reiniciar la operacion
-                    Log.d(Defaults.LOG_TAG, "EMV ERROR " + code);
-                    //TODO enviar al error handler
                     break;
                 case 0x01:
                     // aun hay mas pasos que hacer esperar y evaluar
@@ -490,13 +493,15 @@ public class Emv {
                     Emv.this.performAntishake();
                     break;
                 case Constant.SMART_CARD_EVENT_REMOVE_CARD:
-                    Log.d(Defaults.LOG_TAG, "CARD REMOVED");
+                    Emv.this.pos.raiseWarning("emv", "icc_card_removed");
                     break;
                 case Constant.SMART_CARD_EVENT_POWERON_ERROR:
-                    Log.d(Defaults.LOG_TAG, "CARD ERROR");
+                    Emv.this.pos.raiseError("emv", "cant_init_readers");
+                case 12:
+                    Emv.this.pos.raiseWarning("emv", "nfc_card_removed");
                     break;
                 default:
-                    Log.d(Defaults.LOG_TAG, "CARD EVENT " + i);
+                    Emv.this.pos.raiseError("emv", "card " + i);
             }
         }
     }
