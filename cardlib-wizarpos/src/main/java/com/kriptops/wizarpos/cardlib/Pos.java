@@ -28,6 +28,7 @@ public class Pos {
     private Runnable onPinRequested;
     private Runnable onPinCaptured;
     private BiConsumer<String, String> onError;
+    private BiConsumer<String, String> onWarning;
     private Consumer<Integer> digitsListener;
     private Consumer<TransactionData> goOnline;
     protected TransactionData data;
@@ -317,6 +318,15 @@ public class Pos {
         if (this.onError != null) onError.accept(source, payload);
     }
 
+    public void setOnWarning(BiConsumer<String, String> onWarning) {
+        this.onWarning = onWarning;
+    }
+
+    protected void raiseWarning(String source, String payload) {
+        Log.d(Defaults.LOG_TAG, "warning: " + source + " " + payload);
+        if (this.onWarning != null) onWarning.accept(source, payload);
+    }
+
     protected boolean isPinpadCustomUI() {
         return pinpadCustomUI;
     }
@@ -351,4 +361,6 @@ public class Pos {
     public void setGoOnline(Consumer<TransactionData> goOnline) {
         this.goOnline = goOnline;
     }
+
+
 }
