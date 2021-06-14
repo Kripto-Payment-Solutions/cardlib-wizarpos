@@ -1,5 +1,7 @@
 package com.kriptops.wizarpos.cardlib;
 
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.util.Log;
 
 import com.cloudpos.DeviceException;
@@ -35,15 +37,26 @@ public class Pos {
     private Consumer<Integer> digitsListener;
     private Consumer<TransactionData> goOnline;
     protected TransactionData data;
+    private ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 
 
     public Pos(PosApp posApp) {
         this(posApp, new PosOptions());
     }
 
+    public void beep() {
+        toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+    }
+
     public Pos (PosApp posApp, PosOptions posOptions) {
         if (posOptions == null) {
             throw new IllegalArgumentException("posOptions is null");
+        }
+        // inicializa el manejador de vectores de inicializacion
+        if (posOptions.getIvController() == null) {
+            this.ivController = new MapIVController();
+        } else {
+            this.ivController = posOptions.getIvController();
         }
 
         this.terminal = POSTerminal.getInstance(posApp.getApplicationContext());
@@ -53,7 +66,7 @@ public class Pos {
         //debe ir antes que la creacion del emv kernel
         this.msr = new Msr(msrDevice);
         this.emv = new Emv(this, posApp.getApplicationContext());
-        this.pinpad = new Pinpad(pinPadDevice);
+        this.pinpad = new Pinpad(pinPadDevice, this.ivController);
         this.withPinpad(this::configPinpad);
         //carga los AID y CAPK por defecto
         this.loadAids(Defaults.AIDS);
@@ -61,13 +74,6 @@ public class Pos {
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
         this.setPinpadCustomUI(false);
-
-        // inicializa el manejador de vectores de inicializacion
-        if (posOptions.getIvController() == null) {
-            this.ivController = new MapIVController();
-        } else {
-            this.ivController = posOptions.getIvController();
-        }
     }
 
 
