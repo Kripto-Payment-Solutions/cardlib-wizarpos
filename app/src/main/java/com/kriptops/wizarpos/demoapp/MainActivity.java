@@ -2,6 +2,8 @@ package com.kriptops.wizarpos.demoapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         r.nextBytes(data);
         dataKey.setText(Util.toHexString(data));
         Log.d(Defaults.LOG_TAG, "llave de datos " + dataKey.getText());
+
+
+        ToneGenerator tone = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+        tone.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
     }
 
     public void btn_inyectar_llaves(View btn) {
