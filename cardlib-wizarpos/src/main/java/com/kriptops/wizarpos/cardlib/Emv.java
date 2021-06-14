@@ -89,6 +89,7 @@ public class Emv {
                     EMVJNIInterface.emv_anti_shake_finish(1);
                 } else {
                     Log.d(Defaults.LOG_TAG, "Va adelante NFC, no se ha sensado tarjeta en ICC o MSR");
+                    Emv.this.pos.beep();
                     EMVJNIInterface.emv_anti_shake_finish(0);
                 }
             }

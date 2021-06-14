@@ -10,20 +10,26 @@ import com.cloudpos.pinpad.KeyInfo;
 import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.extend.PINPadExtendDevice;
 import com.kriptops.wizarpos.cardlib.android.AbstractCloseable;
+import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
 
 import java.io.Closeable;
 
 public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Closeable {
 
+    private static final String IV_DATA = "iv_data";
+    private static final String IV_PIN = "iv_pin";
+    private static final String DEFAULT_IV = "0000000000000000";
+
     private static final int PINPAD_ENCRYPT_STRING_MODE_CBC = 1;
     private int minLenPin = 4;
     private int maxLenPin = 6;
-
     private int timeout;
+    private IVController ivController;
 
-    public Pinpad(PINPadDevice device) {
+    public Pinpad(PINPadDevice device, IVController ivController) {
         super((PINPadExtendDevice) device);
+        this.ivController = ivController;
     }
 
     public void setTimeout(int timeout) {
@@ -47,6 +53,15 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
     }
 
     public boolean updateKeys(String pinKeyHex, String dataKeyHex) {
+        return this.updateKeys(
+                pinKeyHex,
+                DEFAULT_IV,
+                dataKeyHex,
+                DEFAULT_IV
+        );
+    }
+
+    public boolean updateKeys(String pinKeyHex, String pinIvHex, String dataKeyHex, String dataIvHex) {
         //TODO Agregar validaciones de parametros
         //paso 0 tanto el pinkey como el data key deben ser de 32 caracteres hexadecimales
         //si no cumple emitir illegal argument exception
@@ -64,6 +79,10 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
             Log.d(Defaults.LOG_TAG, "No se puede actualizar las llaves", e);
             return false;
         }
+
+        this.ivController.saveIv(IV_DATA, dataIvHex);
+        this.ivController.saveIv(IV_PIN, pinIvHex);
+
         return true;
     }
 
@@ -84,7 +103,9 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
                 Defaults.UK_DATA_SLOT, // 1
                 AlgorithmConstants.ALG_3DES
         );
-        byte[] dataIv = new byte[8];
+
+        byte[] dataIv = getIv(IV_DATA);
+
         try {
             return this.getDevice().encryptData(
                     info,
@@ -139,5 +160,12 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
             Log.d(Defaults.LOG_TAG, "Error al solicitar el pin");
         }
         return false;
+    }
+
+    private byte[] getIv(String tag) {
+        String ivHex = this.ivController.readIv(IV_DATA);
+        if (ivHex == null) ivHex = DEFAULT_IV;
+        byte[] iv = Util.toByteArray(ivHex);
+        return iv;
     }
 }
