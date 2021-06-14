@@ -10,6 +10,8 @@ import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.PINPadOperationResult;
 import com.cloudpos.printer.PrinterDevice;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
+import com.kriptops.wizarpos.cardlib.db.IVController;
+import com.kriptops.wizarpos.cardlib.db.MapIVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
 import com.kriptops.wizarpos.cardlib.func.BiConsumer;
 
@@ -24,6 +26,7 @@ public class Pos {
     private final PINPadDevice pinPadDevice;
     private final PrinterDevice printerDevice;
     private final MSRDevice msrDevice;
+    private final IVController ivController;
     private boolean pinpadCustomUI;
     private Runnable onPinRequested;
     private Runnable onPinCaptured;
@@ -33,7 +36,16 @@ public class Pos {
     private Consumer<TransactionData> goOnline;
     protected TransactionData data;
 
+
     public Pos(PosApp posApp) {
+        this(posApp, new PosOptions());
+    }
+
+    public Pos (PosApp posApp, PosOptions posOptions) {
+        if (posOptions == null) {
+            throw new IllegalArgumentException("posOptions is null");
+        }
+
         this.terminal = POSTerminal.getInstance(posApp.getApplicationContext());
         this.pinPadDevice = (PINPadDevice) this.terminal.getDevice("cloudpos.device.pinpad");
         this.printerDevice = (PrinterDevice) this.terminal.getDevice("cloudpos.device.printer");
@@ -49,7 +61,15 @@ public class Pos {
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
         this.setPinpadCustomUI(false);
+
+        // inicializa el manejador de vectores de inicializacion
+        if (posOptions.getIvController() == null) {
+            this.ivController = new MapIVController();
+        } else {
+            this.ivController = posOptions.getIvController();
+        }
     }
+
 
     public void setPinLength(int minLen, int maxLen){
         this.pinpad.setPinLength(minLen, maxLen);
