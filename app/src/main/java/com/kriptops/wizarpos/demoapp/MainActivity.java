@@ -123,16 +123,6 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         getPos().loadAids(aids);
 
 
-        getPos().configTerminal( // este metodo se puede llamar una sola vez
-                "PK000001", // tag 9F16 identidad del comercio
-                "PRUEBA KRIPTO", // tag 9F4E nombre del comercio
-                "00000001", // tag 9F1C identidad del terminal dentro del comercio (no es el serial number)
-                "000000100000", // floor limit contactless
-                "000000100000", // transaction limit contactless
-                "000000008000" // cvm limit (desde que monto pasan de ser quick a full)
-        );
-
-
         this.runOnUiThread(() -> {
             if (response[0]) {
                 Toast.makeText(this, "Llaves actualizadas", Toast.LENGTH_LONG).show();
@@ -177,6 +167,15 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
 
     public void btn_do_trade(View view) {
         Log.d(Defaults.LOG_TAG, "Imprimir Ticket");
+
+        getPos().configTerminal( // este metodo se puede llamar una sola vez
+                "PK000001", // tag 9F16 identidad del comercio
+                "PRUEBA KRIPTO", // tag 9F4E nombre del comercio
+                "00000001", // tag 9F1C identidad del terminal dentro del comercio (no es el serial number)
+                "000000100000", // floor limit contactless
+                "000000100000", // transaction limit contactless
+                "000000008000" // cvm limit (desde que monto pasan de ser quick a full)
+        );
 
         getPos().setPinpadCustomUI(true); // cambia la pantalla de fondo cuando se solicita el uso del pinpad
         getPos().setOnPinRequested(this::onPinRequested);
