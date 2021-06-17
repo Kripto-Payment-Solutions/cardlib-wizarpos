@@ -48,7 +48,7 @@ public class Pos {
         toneGenerator.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
     }
 
-    public Pos (PosApp posApp, PosOptions posOptions) {
+    public Pos(PosApp posApp, PosOptions posOptions) {
         if (posOptions == null) {
             throw new IllegalArgumentException("posOptions is null");
         }
@@ -77,11 +77,11 @@ public class Pos {
     }
 
 
-    public void setPinLength(int minLen, int maxLen){
+    public void setPinLength(int minLen, int maxLen) {
         this.pinpad.setPinLength(minLen, maxLen);
     }
 
-    public void setPinLength(int lenPin){
+    public void setPinLength(int lenPin) {
         this.pinpad.setPinLength(lenPin, lenPin);
     }
 
@@ -115,7 +115,27 @@ public class Pos {
         data.bin = data.maskedPan.substring(0, 6);
         data.maskedPan = "*******************".substring(0, las4index) + data.maskedPan.substring(las4index, panSize);
         withPinpad((p) -> {
-            if (data.track2 != null) data.track2 = p.encryptHex(data.track2);
+            if (data.track2 != null) {
+                //Pure unmodified track2
+                data.track2Bin = data.track2;
+                //ASCII compatible track2 0 padded to octet
+                if (data.track2.endsWith("F")) {
+                    data.track2 = data.track2.substring(0, data.track2.length() - 1);
+                }
+                if (data.track2.length()%2==1){
+                    data.track2 += "0";
+                }
+                if (data.track2Bin.length()%2==1){
+                    data.track2Bin += "F";
+                }
+                data.track2PKCS5 = data.track2;
+                data.track2BinPKCS5 = data.track2Bin;
+
+                data.track2 = p.encryptHex(data.track2, Padding.F);
+                data.track2PKCS5 = p.encryptHex(data.track2PKCS5, Padding.PKCS5);
+                data.track2Bin = p.encryptHex(data.track2Bin, Padding.F);
+                data.track2BinPKCS5 = p.encryptHex(data.track2BinPKCS5, Padding.PKCS5);
+            }
             if (data.emvData != null) {
                 data.emvDataClear = data.emvData;
                 data.emvData = p.encryptHex(data.emvData);
