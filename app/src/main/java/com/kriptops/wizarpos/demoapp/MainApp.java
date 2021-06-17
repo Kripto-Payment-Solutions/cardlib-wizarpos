@@ -7,6 +7,8 @@ import android.util.Log;
 import com.kriptops.wizarpos.cardlib.Pos;
 import com.kriptops.wizarpos.cardlib.PosOptions;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
+import com.kriptops.wizarpos.cardlib.crypto.FitMode;
+import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.MapIVController;
 
 public class MainApp extends Application implements PosApp {
@@ -26,6 +28,8 @@ public class MainApp extends Application implements PosApp {
         // DEL POS
         PosOptions posOptions = new PosOptions();
         posOptions.setIvController(new MapIVController());
+        posOptions.setTrack2FitMode(FitMode.ZERO_FIT);
+        posOptions.setTrack2PaddingMode(PaddingMode.PKCS5);
 
         this.pos = new Pos(this, posOptions);
         this.pos.setPinLength(4);
