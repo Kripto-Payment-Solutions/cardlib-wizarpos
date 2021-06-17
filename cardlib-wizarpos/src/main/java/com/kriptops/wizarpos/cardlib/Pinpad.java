@@ -10,6 +10,7 @@ import com.cloudpos.pinpad.KeyInfo;
 import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.extend.PINPadExtendDevice;
 import com.kriptops.wizarpos.cardlib.android.AbstractCloseable;
+import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
 
@@ -90,10 +91,10 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
         return this.encryptHex(plain, null);
     }
 
-    public String encryptHex(String plain, Padding padding) {
+    public String encryptHex(String plain, PaddingMode paddingMode) {
         if (plain == null) return null;
-        if (padding == null) padding = Padding.F;
-        plain = padding.pad(plain);
+        if (paddingMode == null) paddingMode = PaddingMode.F;
+        plain = paddingMode.pad(plain);
         byte[] data = Util.toByteArray(plain);
         data = this.encrypt(data);
         return Util.toHexString(data);

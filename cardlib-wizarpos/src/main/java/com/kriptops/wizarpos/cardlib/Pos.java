@@ -12,6 +12,8 @@ import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.PINPadOperationResult;
 import com.cloudpos.printer.PrinterDevice;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
+import com.kriptops.wizarpos.cardlib.crypto.FitMode;
+import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.db.MapIVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
@@ -29,6 +31,8 @@ public class Pos {
     private final PrinterDevice printerDevice;
     private final MSRDevice msrDevice;
     private final IVController ivController;
+    private final FitMode track2FitMode;
+    private final PaddingMode track2PaddingModeMode;
     private boolean pinpadCustomUI;
     private Runnable onPinRequested;
     private Runnable onPinCaptured;
@@ -53,11 +57,10 @@ public class Pos {
             throw new IllegalArgumentException("posOptions is null");
         }
         // inicializa el manejador de vectores de inicializacion
-        if (posOptions.getIvController() == null) {
-            this.ivController = new MapIVController();
-        } else {
-            this.ivController = posOptions.getIvController();
-        }
+
+        this.ivController = posOptions.getIvController() == null ? new MapIVController() : posOptions.getIvController();
+        this.track2FitMode = posOptions.getTrack2FitMode() == null ? FitMode.ZERO_FIT : posOptions.getTrack2FitMode();
+        this.track2PaddingModeMode = posOptions.getTrack2PaddingMode() == null ? PaddingMode.PKCS5 : posOptions.getTrack2PaddingMode();
 
         this.terminal = POSTerminal.getInstance(posApp.getApplicationContext());
         this.pinPadDevice = (PINPadDevice) this.terminal.getDevice("cloudpos.device.pinpad");
@@ -117,29 +120,14 @@ public class Pos {
         withPinpad((p) -> {
             if (data.track2 != null) {
                 //Pure unmodified track2
-                data.track2Bin = data.track2;
-                //ASCII compatible track2 0 padded to octet
                 if (data.track2.endsWith("F")) {
                     data.track2 = data.track2.substring(0, data.track2.length() - 1);
                 }
-                if (data.track2.length()%2==1){
-                    data.track2 += "0";
-                }
-                if (data.track2Bin.length()%2==1){
-                    data.track2Bin += "F";
-                }
-                data.track2PKCS5 = data.track2;
-                data.track2BinPKCS5 = data.track2Bin;
-
-                data.track2 = p.encryptHex(data.track2, Padding.F);
-                data.track2PKCS5 = p.encryptHex(data.track2PKCS5, Padding.PKCS5);
-                data.track2Bin = p.encryptHex(data.track2Bin, Padding.F);
-                data.track2BinPKCS5 = p.encryptHex(data.track2BinPKCS5, Padding.PKCS5);
+                data.track2Clear = data.track2;
             }
-            if (data.emvData != null) {
-                data.emvDataClear = data.emvData;
-                data.emvData = p.encryptHex(data.emvData);
-            }
+            data.track2 = this.track2FitMode.fit(data.track2);
+            data.track2 = this.track2PaddingModeMode.pad(data.track2);
+            data.track2 = this.pinpad.encryptHex(data.track2);
         });
         Log.d(Defaults.LOG_TAG, data.toString());
         //TODO elevar a otro handler de nivel aun mas superior
