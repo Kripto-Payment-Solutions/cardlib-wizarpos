@@ -87,10 +87,13 @@ public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Clo
     }
 
     public String encryptHex(String plain) {
+        return this.encryptHex(plain, null);
+    }
+
+    public String encryptHex(String plain, Padding padding) {
         if (plain == null) return null;
-        while (plain.length() == 0 || plain.length() % 16 != 0) {
-            plain = plain + 'F';
-        }
+        if (padding == null) padding = Padding.F;
+        plain = padding.pad(plain);
         byte[] data = Util.toByteArray(plain);
         data = this.encrypt(data);
         return Util.toHexString(data);
