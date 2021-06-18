@@ -13,16 +13,16 @@ public class AbstractCloseable<T extends Device> implements Closeable {
     private boolean open;
     protected final T device;
 
-    protected AbstractCloseable (T device) {
+    protected AbstractCloseable(T device) {
         this.open = false;
         this.device = device;
     }
 
-    public T getDevice () {
+    public T getDevice() {
         return device;
     }
 
-    public boolean isOpen(){
+    public boolean isOpen() {
         return open;
     }
 
@@ -32,7 +32,7 @@ public class AbstractCloseable<T extends Device> implements Closeable {
                 device.open();
                 return (this.open = true);
             } catch (DeviceException e) {
-                Log.d(Defaults.LOG_TAG, "No se puede abrir el dispositivo " + device.toString(), e);
+                Log.d(Defaults.LOG_TAG, "No se puede abrir el dispositivo" + device.toString(), e);
             }
         }
         return false;
@@ -43,7 +43,7 @@ public class AbstractCloseable<T extends Device> implements Closeable {
         try {
             device.close();
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "no se puede cerrar", e);
+            Log.d(Defaults.LOG_TAG, "No se puede cerrar el dispositivo", e);
         }
         this.open = false;
     }

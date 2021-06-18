@@ -9,7 +9,10 @@ import com.cloudpos.jniinterface.EMVJNIInterface;
 import com.cloudpos.jniinterface.IFuntionListener;
 import com.cloudpos.msr.MSROperationResult;
 import com.cloudpos.msr.MSRTrackData;
+import com.kriptops.wizarpos.cardlib.kernel.CardType;
+import com.kriptops.wizarpos.cardlib.kernel.Tag;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
+import com.kriptops.wizarpos.cardlib.tools.Util;
 import com.wizarpos.emvsample.constant.Constant;
 
 import java.nio.charset.StandardCharsets;
@@ -97,9 +100,19 @@ public class Emv {
     }
 
     private void processCardInserted() {
-        Log.d(Defaults.LOG_TAG, "CARD INSERTED");
         this.cardInserted = true;
-        this.setCaptureType();
+        int emvKernelType = EMVJNIInterface.get_card_type();
+        Log.d(Defaults.LOG_TAG, "CARD INSERTED " + emvKernelType);
+        CardType cardType = CardType.fromEmv(emvKernelType);
+        if (cardType == null) {
+            this.pos.raiseError("EMV", "invalid_card_type");
+            return;
+        }
+        Log.d(Defaults.LOG_TAG, "Inicializar EMV Kernel para " + cardType);
+        pos.data.captureType = cardType.tag;
+        pos.getMsr().close();
+        EMVJNIInterface.close_reader(cardType.close);
+        EMVJNIInterface.emv_set_kernel_type(cardType.set);
         this.next();
     }
 
@@ -241,39 +254,9 @@ public class Emv {
     }
 
     public int setCaptureType() {
-        CardType cardType = this.getCardType();
-        Log.d(Defaults.LOG_TAG, "kernel para " + cardType);
-        switch (cardType) {
-            case ICC:
-                pos.data.captureType = "icc";
-                EMVJNIInterface.close_reader(2);
-                pos.getMsr().close();
-                return EMVJNIInterface.emv_set_kernel_type(Constant.CONTACT_EMV_KERNAL);
-            case NFC:
-                pos.data.captureType = "nfc";
-                EMVJNIInterface.close_reader(1);
-                pos.getMsr().close();
-                return EMVJNIInterface.emv_set_kernel_type(Constant.CONTACTLESS_EMV_KERNAL);
-        }
+
         return -1;
     }
-
-    public CardType getCardType() {
-        switch (EMVJNIInterface.get_card_type()) {
-            case 1:
-                return CardType.ICC;
-            case 2:
-                return CardType.NFC;
-        }
-        return null;
-    }
-
-    public enum CardType {
-        MSR,
-        ICC,
-        NFC
-    }
-
 
     public void reset() {
         EMVJNIInterface.close_reader(1);

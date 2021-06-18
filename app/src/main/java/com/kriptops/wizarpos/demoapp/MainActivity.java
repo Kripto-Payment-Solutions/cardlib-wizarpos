@@ -16,14 +16,12 @@ import com.kriptops.wizarpos.cardlib.Pinpad;
 import com.kriptops.wizarpos.cardlib.Pos;
 import com.kriptops.wizarpos.cardlib.Printer;
 import com.kriptops.wizarpos.cardlib.TransactionData;
-import com.kriptops.wizarpos.cardlib.Util;
+import com.kriptops.wizarpos.cardlib.tools.Util;
 import com.kriptops.wizarpos.cardlib.android.PosActivity;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Random;
 
 import javax.crypto.BadPaddingException;
@@ -171,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                 "PK000001", // tag 9F16 identidad del comercio
                 "PRUEBA KRIPTO", // tag 9F4E nombre del comercio
                 "00000001", // tag 9F1C identidad del terminal dentro del comercio (no es el serial number)
-                "000000100000", // floor limit contactless
+                "000000000000", // floor limit contactless
                 "000000100000", // transaction limit contactless
                 "000000008000" // cvm limit (desde que monto pasan de ser quick a full)
         );
@@ -206,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                 "210531", // fecha en formato
                 "140900",
                 "00000001",
-                "10000"
+                "30000"
                 //,false //agregar para hacer el cashback
         );
     }

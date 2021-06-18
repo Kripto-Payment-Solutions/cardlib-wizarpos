@@ -28,7 +28,7 @@ public class MainApp extends Application implements PosApp {
         // DEL POS
         PosOptions posOptions = new PosOptions();
         posOptions.setIvController(new MapIVController());
-        posOptions.setTrack2FitMode(FitMode.ZERO_FIT);
+        posOptions.setTrack2FitMode(FitMode.F_FIT);
         posOptions.setTrack2PaddingMode(PaddingMode.PKCS5);
 
         this.pos = new Pos(this, posOptions);

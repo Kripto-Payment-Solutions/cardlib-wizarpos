@@ -1,4 +1,6 @@
-package com.kriptops.wizarpos.cardlib;
+package com.kriptops.wizarpos.cardlib.kernel;
+
+import com.kriptops.wizarpos.cardlib.tools.Util;
 
 public class Tag {
 

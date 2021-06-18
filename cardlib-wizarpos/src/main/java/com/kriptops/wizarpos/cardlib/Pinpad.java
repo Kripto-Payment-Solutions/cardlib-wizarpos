@@ -13,6 +13,7 @@ import com.kriptops.wizarpos.cardlib.android.AbstractCloseable;
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
+import com.kriptops.wizarpos.cardlib.tools.Util;
 
 import java.io.Closeable;
 

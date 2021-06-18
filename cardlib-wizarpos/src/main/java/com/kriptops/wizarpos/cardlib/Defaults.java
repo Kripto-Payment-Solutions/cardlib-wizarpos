@@ -1,10 +1,97 @@
 package com.kriptops.wizarpos.cardlib;
 
+import com.kriptops.wizarpos.cardlib.kernel.AID;
+import com.kriptops.wizarpos.cardlib.tools.Util;
+
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Defaults {
+
+    public static final List<String> ALTERN_AIDS;
+
+    static {
+            ALTERN_AIDS = new LinkedList<>();
+            AID aidTable = new AID();
+            aidTable.setAppPriority((byte)0);
+            aidTable.setTermFloorLimit(0);
+            aidTable.setMaxTargetPercentage((byte)0);
+            aidTable.setTargetPercentage((byte)0);
+            aidTable.setAcquirerId("000000123456");//TODO se debe capturar de la inicializacion
+            aidTable.setPOSEntryMode((byte)0x80);
+            aidTable.setMCC("3333");
+            aidTable.setMID("12345678");//TODO se debe capturar de la identificacion
+            aidTable.setTransReferCurrencyCode("0604");
+            aidTable.setTransReferCurrencyExponent((byte)2);
+            aidTable.setNeedCompleteMatching((byte)0);
+            aidTable.setSupportOnlinePin((byte)1);
+            aidTable.setAppPreferredName("AEEFFF");
+            aidTable.setDefaultTDOL("");
+            aidTable.setDefaultDDOL("9F3704");
+            aidTable.setKernelConfig((byte)0x20);
+            aidTable.setCtlNoOnDeviceCVM(100000l);// debe coincidir con contactless limit
+            aidTable.setCtlOnDeviceCVM(100000l);//coincide con contactless limit
+            aidTable.setCvmCapCVMRequired((byte)0x60);   // Online PIN & Signature
+            aidTable.setCvmCapNoCVMRequired((byte)0x68); // Online PIN & Signature & No CVM
+            aidTable.setMscvmCapCVMRequired((byte)0x20);
+            aidTable.setMscvmCapNoCVMRequired((byte)0x20);
+
+            //A0000000031010
+            aidTable.setAppVersionNumber("008D");
+            aidTable.setAid("A0000000031010");
+            aidTable.setAppLabel("VISA");
+            aidTable.setTACDenial("0010000000");
+            aidTable.setTACOnline("DC4004F800");
+            aidTable.setTACDefault("DC4000A800");
+            aidTable.setDefaultTDOL("");
+            aidTable.setDefaultDDOL("9F3704");
+            aidTable.setThresholdValue(0x1F4);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+            //A000000003101001
+            aidTable.setAppVersionNumber("008D");
+            aidTable.setAid("A000000003101001");
+            aidTable.setAppLabel("VISA");
+            aidTable.setThresholdValue(0x1F4);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+            //A000000003101002
+            aidTable.setAppVersionNumber("008D");
+            aidTable.setAid("A000000003101002");
+            aidTable.setAppLabel("VISA");
+            aidTable.setThresholdValue(0x1F4);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+            //A0000000032010
+            aidTable.setAppVersionNumber("008C");
+            aidTable.setAid("A0000000032010");
+            aidTable.setAppLabel("VISA ELECTRON");
+            aidTable.setThresholdValue(0x0);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+            //A0000000041010
+            aidTable.setAppVersionNumber("0002");
+            aidTable.setAid("A0000000041010");
+            aidTable.setAppLabel("Mastercard");
+            aidTable.setTACDenial("0400000000");
+            aidTable.setTACOnline("F850ACF800");
+            aidTable.setTACDefault("FC50ACA800");
+            aidTable.setDefaultTDOL("9F02065F2A029A039C0195059F3704");
+            aidTable.setDefaultDDOL("9F3704");
+            aidTable.setThresholdValue(0x1f4);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+            //A0000000043060
+            aidTable.setAppVersionNumber("0003");
+            aidTable.setAid("A0000000043060");
+            aidTable.setAppLabel("Maestro");
+            aidTable.setThresholdValue(0x1f4);
+            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+
+
+    }
 
     public static final List<String> AIDS = Collections.unmodifiableList(Arrays.asList(
             "9F0607A0000000031010DF0101009F08020096DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",

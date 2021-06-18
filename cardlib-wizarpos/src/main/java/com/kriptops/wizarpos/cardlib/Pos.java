@@ -18,6 +18,7 @@ import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.db.MapIVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
 import com.kriptops.wizarpos.cardlib.func.BiConsumer;
+import com.kriptops.wizarpos.cardlib.tools.Util;
 
 import java.util.Collection;
 
@@ -59,7 +60,7 @@ public class Pos {
         // inicializa el manejador de vectores de inicializacion
 
         this.ivController = posOptions.getIvController() == null ? new MapIVController() : posOptions.getIvController();
-        this.track2FitMode = posOptions.getTrack2FitMode() == null ? FitMode.ZERO_FIT : posOptions.getTrack2FitMode();
+        this.track2FitMode = posOptions.getTrack2FitMode() == null ? FitMode.F_FIT : posOptions.getTrack2FitMode();
         this.track2PaddingModeMode = posOptions.getTrack2PaddingMode() == null ? PaddingMode.PKCS5 : posOptions.getTrack2PaddingMode();
 
         this.terminal = POSTerminal.getInstance(posApp.getApplicationContext());
@@ -72,7 +73,7 @@ public class Pos {
         this.pinpad = new Pinpad(pinPadDevice, this.ivController);
         this.withPinpad(this::configPinpad);
         //carga los AID y CAPK por defecto
-        this.loadAids(Defaults.AIDS);
+        this.loadAids(Defaults.ALTERN_AIDS);
         this.loadCapks(Defaults.CAPKS);
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
@@ -123,7 +124,8 @@ public class Pos {
                 if (data.track2.endsWith("F")) {
                     data.track2 = data.track2.substring(0, data.track2.length() - 1);
                 }
-                data.track2Clear = data.track2;
+                // track2 clear no longer needed
+                // data.track2Clear = data.track2;
             }
             data.track2 = this.track2FitMode.fit(data.track2);
             data.track2 = this.track2PaddingModeMode.pad(data.track2);

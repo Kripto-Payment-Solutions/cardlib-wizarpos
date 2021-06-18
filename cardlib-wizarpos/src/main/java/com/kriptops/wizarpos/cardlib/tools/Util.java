@@ -1,4 +1,4 @@
-package com.kriptops.wizarpos.cardlib;
+package com.kriptops.wizarpos.cardlib.tools;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
@@ -82,6 +82,20 @@ public class Util {
     public static String padHex(String hex) {
         while (hex.length() == 0 || hex.length() % 16 != 0) hex += "F";
         return hex;
+    }
+
+
+    public static byte[] intToByte4(int number)
+    {
+        int tmp_num = number;
+        byte[] byte4 = new byte[4];
+
+        for (int i = byte4.length - 1; i > -1; i--)
+        {
+            byte4[i] = (byte)(tmp_num & 0xff);
+            tmp_num = tmp_num >> 8;
+        }
+        return byte4;
     }
 
 }
