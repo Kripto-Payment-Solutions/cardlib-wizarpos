@@ -6,10 +6,10 @@ import com.cloudpos.DeviceException;
 import com.cloudpos.OperationListener;
 import com.cloudpos.TimeConstants;
 import com.cloudpos.msr.MSRDevice;
-import com.kriptops.wizarpos.cardlib.android.AbstractCloseable;
+import com.kriptops.wizarpos.cardlib.bridge.CloseableDeviceWrapper;
 
 
-public class Msr extends AbstractCloseable<MSRDevice> {
+public class Msr extends CloseableDeviceWrapper<MSRDevice> {
 
     public Msr(MSRDevice device) {
         super(device);

@@ -12,6 +12,7 @@ import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.PINPadOperationResult;
 import com.cloudpos.printer.PrinterDevice;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
+import com.kriptops.wizarpos.cardlib.bridge.Terminal;
 import com.kriptops.wizarpos.cardlib.crypto.FitMode;
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
@@ -24,16 +25,15 @@ import java.util.Collection;
 
 public class Pos {
 
-    private final POSTerminal terminal;
+    private final Terminal terminal;
+
+    //TODO migrate to new infrastructure
     private final Emv emv;
     private final Pinpad pinpad;
     private final Msr msr;
-    private final PINPadDevice pinPadDevice;
-    private final PrinterDevice printerDevice;
-    private final MSRDevice msrDevice;
-    private final IVController ivController;
-    private final FitMode track2FitMode;
-    private final PaddingMode track2PaddingModeMode;
+
+    private final PosOptions posOptions;
+
     private boolean pinpadCustomUI;
     private Runnable onPinRequested;
     private Runnable onPinCaptured;
@@ -58,19 +58,21 @@ public class Pos {
             throw new IllegalArgumentException("posOptions is null");
         }
         // inicializa el manejador de vectores de inicializacion
+        // construye el bridge al terminal
+        this.terminal = new Terminal();
+        terminal.init(posApp.getApplicationContext());
 
-        this.ivController = posOptions.getIvController() == null ? new MapIVController() : posOptions.getIvController();
-        this.track2FitMode = posOptions.getTrack2FitMode() == null ? FitMode.F_FIT : posOptions.getTrack2FitMode();
-        this.track2PaddingModeMode = posOptions.getTrack2PaddingMode() == null ? PaddingMode.PKCS5 : posOptions.getTrack2PaddingMode();
+        this.posOptions = new PosOptions();
+        this.posOptions.setIvController(Util.nvl(posOptions.getIvController(), new MapIVController()));
+        this.posOptions.setTrack2FitMode(Util.nvl(posOptions.getTrack2FitMode(),FitMode.F_FIT));
+        this.posOptions.setTrack2PaddingMode(Util.nvl(posOptions.getTrack2PaddingMode(), PaddingMode.PKCS5));
+        this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
+        this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
 
-        this.terminal = POSTerminal.getInstance(posApp.getApplicationContext());
-        this.pinPadDevice = (PINPadDevice) this.terminal.getDevice("cloudpos.device.pinpad");
-        this.printerDevice = (PrinterDevice) this.terminal.getDevice("cloudpos.device.printer");
-        this.msrDevice = (MSRDevice) this.terminal.getDevice("cloudpos.device.msr");
         //debe ir antes que la creacion del emv kernel
-        this.msr = new Msr(msrDevice);
+        this.msr = new Msr(this.terminal.getMsr().getDevice());
         this.emv = new Emv(this, posApp.getApplicationContext());
-        this.pinpad = new Pinpad(pinPadDevice, this.ivController);
+        this.pinpad = new Pinpad(this.terminal.getPinpad().getDevice(), this.posOptions.getIvController());
         this.withPinpad(this::configPinpad);
         //carga los AID y CAPK por defecto
         this.loadAids(Defaults.ALTERN_AIDS);
@@ -90,7 +92,7 @@ public class Pos {
     }
 
     public String getSerialNumber() {
-        return this.terminal.getTerminalSpec().getSerialNumber();
+        return this.terminal.getSerialNumber();
     }
 
     public void configTerminal(
@@ -127,8 +129,8 @@ public class Pos {
                 // track2 clear no longer needed
                 // data.track2Clear = data.track2;
             }
-            data.track2 = this.track2FitMode.fit(data.track2);
-            data.track2 = this.track2PaddingModeMode.pad(data.track2);
+            data.track2 = this.posOptions.getTrack2FitMode().fit(data.track2);
+            data.track2 = this.posOptions.getTrack2PaddingMode().pad(data.track2);
             data.track2 = this.pinpad.encryptHex(data.track2);
         });
         Log.d(Defaults.LOG_TAG, data.toString());
@@ -195,7 +197,7 @@ public class Pos {
      * @param consumer
      */
     public void withPrinter(Consumer<Printer> consumer) {
-        PrinterDevice device = printerDevice;
+        PrinterDevice device = this.terminal.getPrinter().getDevice();
         try {
             device.open();
         } catch (DeviceException e) {
@@ -398,5 +400,7 @@ public class Pos {
         this.goOnline = goOnline;
     }
 
-
+    public PosOptions getPosOptions() {
+        return posOptions;
+    }
 }

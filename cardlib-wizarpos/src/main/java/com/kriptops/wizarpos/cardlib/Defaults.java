@@ -162,6 +162,63 @@ public class Defaults {
             0x9F1A
     };
 
+    public static int[] REQUIRED_TAG_LIST = {
+            0x57,
+            0x5A,
+            0x5F34
+    };
+
+    public static int[] DEFAULT_NFC_TAGLIST = {
+            0x5F2A,
+            0x5F34,
+            0x82,
+            0x95,
+            0x9A,
+            0x9C,
+            0x9F02,
+            0x9F03,
+            0x9F10,
+            0x9F1A,
+            0x9F26,
+            0x9F27,
+            0x9F33,
+            0x9F34,
+            0x9F35,
+            0x9F36,
+            0x9F37,
+            0x9F40,
+            0x9F1E,
+            0x9F09,
+            0x9F41,
+            0x84
+    };
+
+    public static int[] DEFAULT_ICC_TAGLIST = {
+            0x82,
+            0x95,
+            0x9A,
+            0x9C,
+            0x5F2A,
+            0x5F34,
+            0x9F02,
+            0x9F03,
+            0x9F10,
+            0x9F1A,
+            0x9F26,
+            0x9F27,
+            0x9F33,
+            0x9F34,
+            0x9F35,
+            0x9F36,
+            0x9F37,
+            0x9F40,
+            0x9F1E,
+            0x9F09,
+            0x9F41,
+            0x5A,
+            0x84
+    };
+
     public static String LOG_TAG = "CARDLIB";
 
     /**

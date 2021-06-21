@@ -1,4 +1,4 @@
-package com.kriptops.wizarpos.cardlib.android;
+package com.kriptops.wizarpos.cardlib.bridge;
 
 import android.util.Log;
 
@@ -8,12 +8,12 @@ import com.kriptops.wizarpos.cardlib.Defaults;
 
 import java.io.Closeable;
 
-public class AbstractCloseable<T extends Device> implements Closeable {
+public abstract class CloseableDeviceWrapper<T extends Device> implements Closeable {
 
     private boolean open;
     protected final T device;
 
-    protected AbstractCloseable(T device) {
+    protected CloseableDeviceWrapper(T device) {
         this.open = false;
         this.device = device;
     }
