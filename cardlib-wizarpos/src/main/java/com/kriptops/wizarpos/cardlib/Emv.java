@@ -10,8 +10,10 @@ import com.cloudpos.jniinterface.IFuntionListener;
 import com.cloudpos.msr.MSROperationResult;
 import com.cloudpos.msr.MSRTrackData;
 import com.kriptops.wizarpos.cardlib.kernel.CardType;
+import com.kriptops.wizarpos.cardlib.kernel.TLVMap;
 import com.kriptops.wizarpos.cardlib.kernel.Tag;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
+import com.kriptops.wizarpos.cardlib.kernel.TagName;
 import com.kriptops.wizarpos.cardlib.tools.Util;
 import com.wizarpos.emvsample.constant.Constant;
 
@@ -108,9 +110,19 @@ public class Emv {
             this.pos.raiseError("EMV", "invalid_card_type");
             return;
         }
+        pos.getMsr().close();
         Log.d(Defaults.LOG_TAG, "Inicializar EMV Kernel para " + cardType);
         pos.data.captureType = cardType.tag;
-        pos.getMsr().close();
+        switch(cardType) {
+            case ICC:
+                //this.setTag(0x9f07, "FFC0");
+                // this.setTag(0x5f28, "");
+                break;
+            case NFC:
+                this.setTag(0x9f07, "FFC0");
+                this.setTag(0x5f28, "0604");
+                break;
+        }
         EMVJNIInterface.close_reader(cardType.close);
         EMVJNIInterface.emv_set_kernel_type(cardType.set);
         this.next();
@@ -203,6 +215,8 @@ public class Emv {
     public void beginTransaction(String date, String time, String transactionSequenceCounter, String amount, boolean cashback) {
         EMVJNIInterface.emv_trans_initialize();
         //BIENES Y SERVICIOS
+        // this.setTag(0x9f07, "FFC0");
+        // this.setTag(0x5f28, "0604");
         this.setTag(0x9a, date);
         this.setTag(0x9f21, time);
         this.setTag(0x9f41, transactionSequenceCounter);
@@ -212,6 +226,7 @@ public class Emv {
             EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_GOODS_SERVICE);
         }
         this.setAmount(amount);
+        this.setAmountOther("000");
 
         EMVJNIInterface.emv_set_force_online(EMV_READER_ONLINE_ONLY);
 
@@ -241,6 +256,13 @@ public class Emv {
         byte[] buffer = new byte[amount.length() + 1];
         System.arraycopy(amountBuffer, 0, buffer, 0, amountBuffer.length);
         return EMVJNIInterface.emv_set_trans_amount(buffer);
+    }
+
+    public int setAmountOther(String amount) {
+        byte[] amountBuffer = amount.getBytes();
+        byte[] buffer = new byte[amount.length() + 1];
+        System.arraycopy(amountBuffer, 0, buffer, 0, amountBuffer.length);
+        return EMVJNIInterface.emv_set_other_amount(buffer);
     }
 
     public int setTag(int tag, String hexPayload) {
@@ -284,30 +306,19 @@ public class Emv {
     private void processOnline() {
         TransactionData data = pos.data;
         if ("nfc".equals(data.captureType) || "icc".equals(data.captureType)) {
-            int[] adjustedTagList = new int[taglist.length + 3];
-            adjustedTagList[0] = 0x57;
-            adjustedTagList[1] = 0x5A;
-            adjustedTagList[1] = 0x5F34;
-            System.arraycopy(taglist, 0, adjustedTagList, 2, taglist.length);
-            data.emvData = readTags(adjustedTagList);
-            if (data.emvData.startsWith("57")) {
-                int length = Util.toByteArray(data.emvData.substring(2, 4))[0] * 2;
-                String track2 = data.emvData.substring(4, 4 + length);
-                data.emvData = data.emvData.substring(4 + length);
-                if (data.track2 == null) data.track2 = track2;
+            TLVMap requiredTags = new TLVMap(readTags(Defaults.REQUIRED_TAG_LIST));
+
+            if (requiredTags.containsKey("57") && data.track2 == null) {
+                data.track2 = requiredTags.get("57").getValue();
             }
-            if (data.emvData.startsWith("5A")) {
-                int length = Util.toByteArray(data.emvData.substring(2, 4))[0] * 2;
-                String pan = data.emvData.substring(4, 4 + length);
-                data.emvData = data.emvData.substring(4 + length);
-                if (data.maskedPan == null) data.maskedPan = pan;
+            if (requiredTags.containsKey("5A") && data.maskedPan == null) {
+                data.maskedPan = requiredTags.get("5A").getValue();
             }
-            if (data.emvData.startsWith("5F34")) {
-                int length = Util.toByteArray(data.emvData.substring(4, 6))[0] * 2;
-                String psn = data.emvData.substring(6, 6 + length);
-                data.emvData = data.emvData.substring(6 + length);
-                if (data.panSequenceNumber == null) data.panSequenceNumber = psn;
+            if (requiredTags.containsKey("5F34") && data.panSequenceNumber == null) {
+                data.panSequenceNumber = requiredTags.get("5F34").getValue();
             }
+            int[] tags = "nfc".equals(data.captureType) ? pos.getPosOptions().getNfcTagList() : pos.getPosOptions().getIccTaglist();
+            data.emvData = readTags(tags);
             if (data.maskedPan == null && data.track2 != null) {
                 data.maskedPan = data.track2.split("[D=]")[0];
             }

@@ -19,16 +19,14 @@ public class TransactionData {
 
     @Override
     public String toString() {
-        return "TransactionData{" +
-                "captureType='" + captureType + '\'' +
-                ", maskedPan='" + maskedPan + '\'' +
-                ", bin='" + bin + '\'' +
-                ", pinblock='" + pinblock + '\'' +
-                ", panSequenceNumber='" + panSequenceNumber + '\'' +
-                ", track2='" + track2 + '\'' +
-                ", track2Clear='" + track2Clear + '\'' +
-                ", emvData='" + emvData + '\'' +
-                ", emvDataClear='" + emvDataClear + '\'' +
-                '}';
+        return "TransactionData{\n" +
+                "    captureType:'" + captureType + "',\n" +
+                "    maskedPan:'" + maskedPan + "',\n" +
+                "    bin:'" + bin + "',\n" +
+                "    panSequenceNumber:'" + panSequenceNumber + "',\n" +
+                "    track2:'" + track2 + "',\n" +
+                "    emvData:'" + emvData + "',\n" +
+                "    emvDataClear:'" + emvDataClear + "'\n" +
+                "}";
     }
 }

@@ -33,7 +33,6 @@ public class Util {
     }
 
     /**
-     *
      * @param text texto a codificar bytes en hex
      * @return
      */
@@ -42,7 +41,6 @@ public class Util {
     }
 
     /**
-     *
      * @param data
      * @return
      */
@@ -51,8 +49,7 @@ public class Util {
     }
 
     /**
-     *
-     * @param text texto a codificar bytes en hex
+     * @param text        texto a codificar bytes en hex
      * @param withPadding indica si se completa el hex string con F hasta completar un octeto
      * @return
      */
@@ -62,7 +59,6 @@ public class Util {
     }
 
     /**
-     *
      * @param data
      * @param withPadding
      * @return
@@ -75,7 +71,6 @@ public class Util {
     }
 
     /**
-     *
      * @param hex
      * @return
      */
@@ -85,17 +80,27 @@ public class Util {
     }
 
 
-    public static byte[] intToByte4(int number)
-    {
+    public static byte[] intToByte4(int number) {
         int tmp_num = number;
         byte[] byte4 = new byte[4];
 
-        for (int i = byte4.length - 1; i > -1; i--)
-        {
-            byte4[i] = (byte)(tmp_num & 0xff);
+        for (int i = byte4.length - 1; i > -1; i--) {
+            byte4[i] = (byte) (tmp_num & 0xff);
             tmp_num = tmp_num >> 8;
         }
         return byte4;
+    }
+
+    /**
+     * Prueba un valor valor, si es nulo retorna un valor por defecto.
+     *
+     * @param <T>   type of the value to test
+     * @param value value to test
+     * @param def   default value to use
+     * @return el valor de pruena o un valor por defecto en caso sea nulo
+     */
+    public static <T> T nvl(T value, T def) {
+        return value == null ? def : value;
     }
 
 }

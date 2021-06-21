@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">Wizarpos Demo App</string>
     <string name="title_llaves">Llaves</string>
+    <string name="txt_llave_maestra">0123456789ABCDEF</string>
     <string name="txt_llave_pin">Llave de pin</string>
     <string name="txt_llave_datos">Llave de datos</string>
     <string name="btn_generar">Generar</string>
     <string name="btn_inyectar">Inyectar</string>
     <string name="btn_imprimir">Imprimir</string>
     <string name="btn_cifrar">Cifrar</string>
+    <string name="hex_digits">0123456789ABCDEF</string>
+
 </resources>

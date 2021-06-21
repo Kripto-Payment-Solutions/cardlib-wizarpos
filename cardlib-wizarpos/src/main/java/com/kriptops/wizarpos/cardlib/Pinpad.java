@@ -9,7 +9,7 @@ import com.cloudpos.jniinterface.PinPadCallbackHandler;
 import com.cloudpos.pinpad.KeyInfo;
 import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.extend.PINPadExtendDevice;
-import com.kriptops.wizarpos.cardlib.android.AbstractCloseable;
+import com.kriptops.wizarpos.cardlib.bridge.CloseableDeviceWrapper;
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
@@ -17,7 +17,7 @@ import com.kriptops.wizarpos.cardlib.tools.Util;
 
 import java.io.Closeable;
 
-public class Pinpad extends AbstractCloseable<PINPadExtendDevice> implements Closeable {
+public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implements Closeable {
 
     private static final String IV_DATA = "iv_data";
     private static final String IV_PIN = "iv_pin";
