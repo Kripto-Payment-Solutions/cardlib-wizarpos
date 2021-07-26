@@ -17,8 +17,8 @@ public class PosOptions {
     private PaddingMode track2PaddingMode;
     private int[] iccTaglist;
     private int[] nfcTagList;
-    private int authProcessingCode;
-    private int reverseProcessingCode;
+    private byte authProcessingCode;
+    private byte reverseProcessingCode;
     private List<AID> aidTables;
 
     public IVController getIvController() {
@@ -89,7 +89,7 @@ public class PosOptions {
         this.nfcTagList = nfcTagList;
     }
 
-    public int getAuthProcessingCode() {
+    public byte getAuthProcessingCode() {
         return authProcessingCode;
     }
 
@@ -98,11 +98,11 @@ public class PosOptions {
      *
      * @param authProcessingCode
      */
-    public void setAuthProcessingCode(int authProcessingCode) {
+    public void setAuthProcessingCode(byte authProcessingCode) {
         this.authProcessingCode = authProcessingCode;
     }
 
-    public int getReverseProcessingCode() {
+    public byte getReverseProcessingCode() {
         return reverseProcessingCode;
     }
 
@@ -111,7 +111,7 @@ public class PosOptions {
      *
      * @return
      */
-    public void setReverseProcessingCode(int reverseProcessingCode) {
+    public void setReverseProcessingCode(byte reverseProcessingCode) {
         this.reverseProcessingCode = reverseProcessingCode;
     }
 
