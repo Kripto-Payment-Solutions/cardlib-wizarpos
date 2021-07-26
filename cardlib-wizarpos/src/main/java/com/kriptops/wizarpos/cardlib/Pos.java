@@ -68,14 +68,16 @@ public class Pos {
         this.posOptions.setTrack2PaddingMode(Util.nvl(posOptions.getTrack2PaddingMode(), PaddingMode.PKCS5));
         this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
         this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
+        this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AID_TABLES));
 
         //debe ir antes que la creacion del emv kernel
         this.msr = new Msr(this.terminal.getMsr().getDevice());
         this.emv = new Emv(this, posApp.getApplicationContext());
         this.pinpad = new Pinpad(this.terminal.getPinpad().getDevice(), this.posOptions.getIvController());
         this.withPinpad(this::configPinpad);
+
         //carga los AID y CAPK por defecto
-        this.loadAids(Defaults.ALTERN_AIDS);
+        this.loadAids(this.posOptions.getAidTables());
         this.loadCapks(Defaults.CAPKS);
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
