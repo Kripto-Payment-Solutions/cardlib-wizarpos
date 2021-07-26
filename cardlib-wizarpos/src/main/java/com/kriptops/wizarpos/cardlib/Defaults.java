@@ -3,6 +3,7 @@ package com.kriptops.wizarpos.cardlib;
 import com.kriptops.wizarpos.cardlib.kernel.AID;
 import com.kriptops.wizarpos.cardlib.tools.Util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -10,101 +11,251 @@ import java.util.List;
 
 public class Defaults {
 
-    public static final List<String> ALTERN_AIDS;
+    public static final List<AID> AID_TABLES;
 
     static {
-            ALTERN_AIDS = new LinkedList<>();
-            AID aidTable = new AID();
-            aidTable.setAppPriority((byte)0);
-            aidTable.setTermFloorLimit(0);
-            aidTable.setMaxTargetPercentage((byte)0);
-            aidTable.setTargetPercentage((byte)0);
-            aidTable.setAcquirerId("000000123456");//TODO se debe capturar de la inicializacion
-            aidTable.setPOSEntryMode((byte)0x80);
-            aidTable.setMCC("3333");
-            aidTable.setMID("12345678");//TODO se debe capturar de la identificacion
-            aidTable.setTransReferCurrencyCode("0604");
-            aidTable.setTransReferCurrencyExponent((byte)2);
-            aidTable.setNeedCompleteMatching((byte)0);
-            aidTable.setSupportOnlinePin((byte)1);
-            aidTable.setAppPreferredName("AEEFFF");
-            aidTable.setDefaultTDOL("");
-            aidTable.setDefaultDDOL("9F3704");
-            aidTable.setKernelConfig((byte)0x20);
-            aidTable.setCtlNoOnDeviceCVM(100000l);// debe coincidir con contactless limit
-            aidTable.setCtlOnDeviceCVM(100000l);//coincide con contactless limit
-            aidTable.setCvmCapCVMRequired((byte)0x60);   // Online PIN & Signature
-            aidTable.setCvmCapNoCVMRequired((byte)0x68); // Online PIN & Signature & No CVM
-            aidTable.setMscvmCapCVMRequired((byte)0x20);
-            aidTable.setMscvmCapNoCVMRequired((byte)0x20);
+        List<AID> tables = new LinkedList<>();
+        AID aid;
+        // AIDS de visa
+        aid = new AID();
+        aid.setAid("A0000000031010" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0x00);
+        aid.setTermFloorLimit(0);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0x00);
+        aid.setThresholdValue((byte) 0x00);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0096" );
+        aid.setPOSEntryMode((byte) 0x80);
+        aid.setTransReferCurrencyCode("0604" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setCtlOnDeviceCVM(1000000l); // cl limit when on device CMV is active, must match the set contactless limit
+        aid.setCtlNoOnDeviceCVM(1000000l); // cl limit when no on device CMV is active, must match the set contactless limit
+        aid.setCvmCapCVMRequired((byte) 0x00);
+        aid.setCvmCapNoCVMRequired((byte) 0x00);
+        aid.setMscvmCapCVMRequired((byte) 0x00);
+        aid.setMscvmCapNoCVMRequired((byte) 0x00);
+        aid.setContactlessKernelID((byte) 0xFF);
+        tables.add(aid);
 
-            //A0000000031010
-            aidTable.setAppVersionNumber("008D");
-            aidTable.setAid("A0000000031010");
-            aidTable.setAppLabel("VISA");
-            aidTable.setTACDenial("0010000000");
-            aidTable.setTACOnline("DC4004F800");
-            aidTable.setTACDefault("DC4000A800");
-            aidTable.setDefaultTDOL("");
-            aidTable.setDefaultDDOL("9F3704");
-            aidTable.setThresholdValue(0x1F4);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+        aid = new AID();
+        aid.setAid("A0000000032010" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0x00);
+        aid.setTermFloorLimit(0);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0x00);
+        aid.setThresholdValue((byte) 0x00);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0096" );
+        aid.setPOSEntryMode((byte) 0x80);
+        aid.setTransReferCurrencyCode("0604" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setContactlessKernelID((byte) 0xFF);
+        //solo para aids de mastercard
+        aid.setCtlOnDeviceCVM(0l);
+        aid.setCtlNoOnDeviceCVM(0l);
+        aid.setCvmCapCVMRequired((byte) 0x00);
+        aid.setCvmCapNoCVMRequired((byte) 0x00);
+        aid.setMscvmCapCVMRequired((byte) 0x00);
+        aid.setMscvmCapNoCVMRequired((byte) 0x00);
+        tables.add(aid);
 
-            //A000000003101001
-            aidTable.setAppVersionNumber("008D");
-            aidTable.setAid("A000000003101001");
-            aidTable.setAppLabel("VISA");
-            aidTable.setThresholdValue(0x1F4);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+        aid = new AID();
+        aid.setAid("A0000000033010" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0x00);
+        aid.setTermFloorLimit(0);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0x00);
+        aid.setThresholdValue((byte) 0x00);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0096" );
+        aid.setPOSEntryMode((byte) 0x80);
+        aid.setTransReferCurrencyCode("0604" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setContactlessKernelID((byte) 0xFF);
+        //solo para aids de mastercard
+        aid.setCtlOnDeviceCVM(0l);
+        aid.setCtlNoOnDeviceCVM(0l);
+        aid.setCvmCapCVMRequired((byte) 0x00);
+        aid.setCvmCapNoCVMRequired((byte) 0x00);
+        aid.setMscvmCapCVMRequired((byte) 0x00);
+        aid.setMscvmCapNoCVMRequired((byte) 0x00);
+        tables.add(aid);
 
-            //A000000003101002
-            aidTable.setAppVersionNumber("008D");
-            aidTable.setAid("A000000003101002");
-            aidTable.setAppLabel("VISA");
-            aidTable.setThresholdValue(0x1F4);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+        // AIDS de Mastercard
+        aid = new AID();
+        aid.setAid("A0000000041010" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0);
+        aid.setTermFloorLimit(10000);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0);
+        aid.setThresholdValue(0);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0002" );
+        aid.setPOSEntryMode((byte) 0xFF);
+        aid.setTransReferCurrencyCode("0840" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setContactlessKernelID((byte) 0xFF);
+        //solo para aids de mastercard
+        aid.setCtlOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCtlNoOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCvmCapCVMRequired((byte) 0x60);
+        aid.setCvmCapNoCVMRequired((byte) 0x68);
+        aid.setMscvmCapCVMRequired((byte) 0x20);
+        aid.setMscvmCapNoCVMRequired((byte) 0x20);
+        tables.add(aid);
 
-            //A0000000032010
-            aidTable.setAppVersionNumber("008C");
-            aidTable.setAid("A0000000032010");
-            aidTable.setAppLabel("VISA ELECTRON");
-            aidTable.setThresholdValue(0x0);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+        aid = new AID();
+        aid.setAid("A0000000042203" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0);
+        aid.setTermFloorLimit(10000);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0);
+        aid.setThresholdValue(0);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0002" );
+        aid.setPOSEntryMode((byte) 0xFF);
+        aid.setTransReferCurrencyCode("0840" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setContactlessKernelID((byte) 0xFF);
+        //solo para aids de mastercard
+        aid.setCtlOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCtlNoOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCvmCapCVMRequired((byte) 0x60);
+        aid.setCvmCapNoCVMRequired((byte) 0x68);
+        aid.setMscvmCapCVMRequired((byte) 0x20);
+        aid.setMscvmCapNoCVMRequired((byte) 0x20);
+        tables.add(aid);
 
-            //A0000000041010
-            aidTable.setAppVersionNumber("0002");
-            aidTable.setAid("A0000000041010");
-            aidTable.setAppLabel("Mastercard");
-            aidTable.setTACDenial("0400000000");
-            aidTable.setTACOnline("F850ACF800");
-            aidTable.setTACDefault("FC50ACA800");
-            aidTable.setDefaultTDOL("9F02065F2A029A039C0195059F3704");
-            aidTable.setDefaultDDOL("9F3704");
-            aidTable.setThresholdValue(0x1f4);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
+        aid = new AID();
+        aid.setAid("A0000000043060" );
+        aid.setAppLabel("AID2" );
+        aid.setAppPreferredName("AEEFFF" );
+        aid.setAppPriority((byte) 0);
+        aid.setTermFloorLimit(10000);
+        aid.setTACDefault("0000000000" );
+        aid.setTACDenial("0000000000" );
+        aid.setTACOnline("0000000000" );
+        aid.setTargetPercentage((byte) 0);
+        aid.setThresholdValue(0);
+        aid.setMaxTargetPercentage((byte) 0x00);
+        aid.setAcquirerId("000000123456" );
+        aid.setMCC("3333" );
+        aid.setMID("12345678" );
+        aid.setAppVersionNumber("0002" );
+        aid.setPOSEntryMode((byte) 0xFF);
+        aid.setTransReferCurrencyCode("0840" );
+        aid.setTransReferCurrencyExponent((byte) 0x02);
+        aid.setDefaultDDOL("9F37049F47018F019F3201" );
+        aid.setDefaultTDOL("9F0804" );
+        aid.setSupportOnlinePin((byte) 0x01);
+        aid.setNeedCompleteMatching((byte) 0x00);
+        aid.setTermRiskManageData("" );
+        aid.setContactlessLimit(1000000l); // 10000 como transaction limit contactless
+        aid.setCvmLimit(15000); // 150 unidades como CVM limit
+        aid.setContactlessFloorLimit(0l); // online only zero floor limit
+        aid.setKernelConfig((byte) 0x20);
+        aid.setContactlessKernelID((byte) 0xFF);
+        //solo para aids de mastercard
+        aid.setCtlOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCtlNoOnDeviceCVM(aid.getContactlessLimit());
+        aid.setCvmCapCVMRequired((byte) 0x60);
+        aid.setCvmCapNoCVMRequired((byte) 0x68);
+        aid.setMscvmCapCVMRequired((byte) 0x20);
+        aid.setMscvmCapNoCVMRequired((byte) 0x20);
+        tables.add(aid);
 
-            //A0000000043060
-            aidTable.setAppVersionNumber("0003");
-            aidTable.setAid("A0000000043060");
-            aidTable.setAppLabel("Maestro");
-            aidTable.setThresholdValue(0x1f4);
-            ALTERN_AIDS.add(Util.toHexString(aidTable.getDataBuffer()));
-
-
+        AID_TABLES = Collections.unmodifiableList(tables);
     }
 
     public static final List<String> AIDS = Collections.unmodifiableList(Arrays.asList(
             "9F0607A0000000031010DF0101009F08020096DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
+            "9F0607A0000000032010DF0101009F08020096DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
+            "9F0607A0000000033010DF0101009F08020096DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
             "9F0607A0000000041010DF0101009F08020002DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120",
-            "9F0607A0000000651010DF0101009F08020200DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0607A0000000999090DF0101009F08020009DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0606A00000999901DF0101009F08029999DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0608A000000025010501DF0101009F08020001DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0605A122334455DF0101009F08021234DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0607A0000003330101DF0101009F08020030DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0607A0000001523010DF0101009F08020001DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-            "9F0607A0000002281010DF0101009F08020002DF1105BC40BC8000DF1205BC40BC8000DF130500100000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120DF810C0102",
-            "9F0607A0000002282010DF0101009F0802008CDF1105BC40BC8000DF1205BC40BC8000DF130500100000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF810C0103"
+            "9F0607A0000000042203DF0101009F08020002DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120",
+            "9F0607A0000000043060DF0101009F08020002DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120"
+
     ));
 
     public static final List<String> CAPKS = Collections.unmodifiableList(Arrays.asList(
@@ -235,6 +386,10 @@ public class Defaults {
      *
      */
     public static final int UK_DATA_SLOT = 1;
+
+    public static final String IV_DATA = "iv_data";
+    public static final String IV_PIN = "iv_pin";
+    public static final String DEFAULT_IV = "0000000000000000";
 
     /**
      * Timeout de lectura de pin para 60 segundos por defecto.
