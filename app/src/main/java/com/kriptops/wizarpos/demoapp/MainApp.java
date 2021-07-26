@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.kriptops.wizarpos.cardlib.Defaults;
 import com.kriptops.wizarpos.cardlib.Pos;
 import com.kriptops.wizarpos.cardlib.PosOptions;
 import com.kriptops.wizarpos.cardlib.android.PosApp;
@@ -30,6 +31,9 @@ public class MainApp extends Application implements PosApp {
         posOptions.setIvController(new MapIVController());
         posOptions.setTrack2FitMode(FitMode.F_FIT);
         posOptions.setTrack2PaddingMode(PaddingMode.PKCS5);
+        posOptions.setAuthProcessingCode((byte) 0x00);
+        posOptions.setReverseProcessingCode((byte) 0x00);
+        posOptions.setAidTables(Defaults.AID_TABLES);
 
         this.pos = new Pos(this, posOptions);
         this.pos.setPinLength(4);
