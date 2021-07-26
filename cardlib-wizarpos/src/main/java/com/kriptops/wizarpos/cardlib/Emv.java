@@ -221,9 +221,9 @@ public class Emv {
         this.setTag(0x9f21, time);
         this.setTag(0x9f41, transactionSequenceCounter);
         if (cashback) {
-            EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_CASHBACK);
+            EMVJNIInterface.emv_set_trans_type(this.pos.getPosOptions().getReverseProcessingCode());
         } else {
-            EMVJNIInterface.emv_set_trans_type(Constant.EMV_TRANS_GOODS_SERVICE);
+            EMVJNIInterface.emv_set_trans_type(this.pos.getPosOptions().getAuthProcessingCode());
         }
         this.setAmount(amount);
         this.setAmountOther("000");

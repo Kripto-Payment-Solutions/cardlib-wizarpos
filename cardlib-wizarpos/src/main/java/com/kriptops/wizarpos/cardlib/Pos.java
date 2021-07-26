@@ -19,9 +19,12 @@ import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.db.MapIVController;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
 import com.kriptops.wizarpos.cardlib.func.BiConsumer;
+import com.kriptops.wizarpos.cardlib.kernel.AID;
 import com.kriptops.wizarpos.cardlib.tools.Util;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Pos {
 
@@ -55,7 +58,7 @@ public class Pos {
 
     public Pos(PosApp posApp, PosOptions posOptions) {
         if (posOptions == null) {
-            throw new IllegalArgumentException("posOptions is null");
+            throw new IllegalArgumentException("posOptions is null" );
         }
         // inicializa el manejador de vectores de inicializacion
         // construye el bridge al terminal
@@ -64,18 +67,20 @@ public class Pos {
 
         this.posOptions = new PosOptions();
         this.posOptions.setIvController(Util.nvl(posOptions.getIvController(), new MapIVController()));
-        this.posOptions.setTrack2FitMode(Util.nvl(posOptions.getTrack2FitMode(),FitMode.F_FIT));
+        this.posOptions.setTrack2FitMode(Util.nvl(posOptions.getTrack2FitMode(), FitMode.F_FIT));
         this.posOptions.setTrack2PaddingMode(Util.nvl(posOptions.getTrack2PaddingMode(), PaddingMode.PKCS5));
         this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
         this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
+        this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AID_TABLES));
 
         //debe ir antes que la creacion del emv kernel
         this.msr = new Msr(this.terminal.getMsr().getDevice());
         this.emv = new Emv(this, posApp.getApplicationContext());
         this.pinpad = new Pinpad(this.terminal.getPinpad().getDevice(), this.posOptions.getIvController());
         this.withPinpad(this::configPinpad);
+
         //carga los AID y CAPK por defecto
-        this.loadAids(Defaults.ALTERN_AIDS);
+        this.loadAids(this.posOptions.getAidTables());
         this.loadCapks(Defaults.CAPKS);
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
@@ -123,7 +128,7 @@ public class Pos {
         withPinpad((p) -> {
             if (data.track2 != null) {
                 //Pure unmodified track2
-                if (data.track2.endsWith("F")) {
+                if (data.track2.endsWith("F" )) {
                     data.track2 = data.track2.substring(0, data.track2.length() - 1);
                 }
                 // track2 clear no longer needed
@@ -138,7 +143,7 @@ public class Pos {
         if (goOnline != null) {
             goOnline.accept(data);
         } else {
-            raiseError("pos", "online_handler_null");
+            raiseError("pos", "online_handler_null" );
         }
 
     }
@@ -151,7 +156,9 @@ public class Pos {
         this.emv.setTaglist(tagList);
     }
 
-    public void loadAids(Collection<String> aids) {
+    public void loadAids(List<AID> aidTables) {
+        List<String> aids = new LinkedList<>();
+        for (AID aid : aidTables) aids.add(Util.toHexString(aid.getDataBuffer()));
         emv.initAIDS(aids.toArray(new String[aids.size()]));
     }
 
@@ -159,16 +166,12 @@ public class Pos {
         emv.initCAPKS(capks.toArray(new String[capks.size()]));
     }
 
-    public void loadAids(String[] aids) {
-        emv.initAIDS(aids);
-    }
-
     public void loadCapks(String[] capks) {
         emv.initCAPKS(capks);
     }
 
     private void configPinpad(Pinpad pinpad) {
-        pinpad.setGUIConfiguration("sound", "true");
+        pinpad.setGUIConfiguration("sound", "true" );
     }
 
     public Pinpad getPinpad() {
@@ -258,7 +261,7 @@ public class Pos {
         pinpad.open();
 
         if (!pinpad.listenForPinBlock(pan, this::pinpadEventResolved, this.digitsListener)) {
-            onError.accept("pin", "startFailed");
+            onError.accept("pin", "startFailed" );
             pinpad.close();
         }
     }
@@ -276,17 +279,17 @@ public class Pos {
                     if (this.onPinCaptured != null) {
                         this.onPinCaptured.run();
                     } else {
-                        raiseError("pin", "request_handler_null");
+                        raiseError("pin", "request_handler_null" );
                     }
                 } else {
                     continueAfterPin();
                 }
                 break;
             case OperationResult.CANCEL:
-                raiseError("pin", "cancel");
+                raiseError("pin", "cancel" );
                 break;
             case OperationResult.ERR_TIMEOUT:
-                raiseError("pin", "timeout");
+                raiseError("pin", "timeout" );
                 break;
             default:
                 raiseError("pin", "" + code);
@@ -305,9 +308,9 @@ public class Pos {
 
     protected void requestPinToUser() {
         if (!this.isPinpadCustomUI()) {
-            raiseError("pin", "custom_ui_false");
+            raiseError("pin", "custom_ui_false" );
         } else if (this.onPinRequested == null) {
-            raiseError("pin", "request_handler_null");
+            raiseError("pin", "request_handler_null" );
         } else {
             this.onPinRequested.run();
         }

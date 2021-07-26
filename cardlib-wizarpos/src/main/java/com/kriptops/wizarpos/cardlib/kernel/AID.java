@@ -26,8 +26,8 @@ public class AID {
     private byte transReferCurrencyExponent; // Transaction Reference Currency Exponent
     private String defaultDDOL;              // Default Dynamic Data Authentication Data Object List(DDOL)
     private String defaultTDOL;              // Default Transaction Certificate Data Object List(TDOL)
-    
-    // supportOnlinePin[0] = 0 means the Application unsupported online PIN, 
+
+    // supportOnlinePin[0] = 0 means the Application unsupported online PIN,
     // any other value means the Application supported online PIN
     private byte supportOnlinePin;
     private byte needCompleteMatching;
@@ -35,7 +35,7 @@ public class AID {
     private long contactlessLimit;
     private long cvmLimit;
     private long contactlessFloorLimit;
-    
+
     // C2 - Mastercard Contactless
     private byte kernelConfig;
     private long ctlOnDeviceCVM;
@@ -669,6 +669,44 @@ public class AID {
 
         return dataOut;
     }
+
+    @Override
+    public String toString() {
+        return "AIDT{" +
+                "aid='" + aid + '\'' +
+                ", appLabel='" + appLabel + '\'' +
+                ", appPreferredName='" + appPreferredName + '\'' +
+                ", appPriority=" + appPriority +
+                ", termFloorLimit=" + termFloorLimit +
+                ", termActionCodeDefault='" + termActionCodeDefault + '\'' +
+                ", termActionCodeDenial='" + termActionCodeDenial + '\'' +
+                ", termActionCodeOnline='" + termActionCodeOnline + '\'' +
+                ", targetPercentage=" + targetPercentage +
+                ", thresholdValue=" + thresholdValue +
+                ", maxTargetPercentage=" + maxTargetPercentage +
+                ", acquirerId='" + acquirerId + '\'' +
+                ", mcc='" + mcc + '\'' +
+                ", mid='" + mid + '\'' +
+                ", appVersionNumber='" + appVersionNumber + '\'' +
+                ", posEntryMode=" + posEntryMode +
+                ", transReferCurrencyCode='" + transReferCurrencyCode + '\'' +
+                ", transReferCurrencyExponent=" + transReferCurrencyExponent +
+                ", defaultDDOL='" + defaultDDOL + '\'' +
+                ", defaultTDOL='" + defaultTDOL + '\'' +
+                ", supportOnlinePin=" + supportOnlinePin +
+                ", needCompleteMatching=" + needCompleteMatching +
+                ", termRiskManageData='" + termRiskManageData + '\'' +
+                ", contactlessLimit=" + contactlessLimit +
+                ", cvmLimit=" + cvmLimit +
+                ", contactlessFloorLimit=" + contactlessFloorLimit +
+                ", kernelConfig=" + kernelConfig +
+                ", ctlOnDeviceCVM=" + ctlOnDeviceCVM +
+                ", ctlNoOnDeviceCVM=" + ctlNoOnDeviceCVM +
+                ", cvmCapCVMRequired=" + cvmCapCVMRequired +
+                ", cvmCapNoCVMRequired=" + cvmCapNoCVMRequired +
+                ", mscvmCapCVMRequired=" + mscvmCapCVMRequired +
+                ", mscvmCapNoCVMRequired=" + mscvmCapNoCVMRequired +
+                ", contactlessKernelID=" + contactlessKernelID +
+                '}';
+    }
 }
-
-
