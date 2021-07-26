@@ -3,6 +3,9 @@ package com.kriptops.wizarpos.cardlib;
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.crypto.FitMode;
+import com.kriptops.wizarpos.cardlib.kernel.AID;
+
+import java.util.List;
 
 /**
  * Permite establecer parametros de configuracion para la librería.
@@ -14,6 +17,9 @@ public class PosOptions {
     private PaddingMode track2PaddingMode;
     private int[] iccTaglist;
     private int[] nfcTagList;
+    private int authProcessingCode;
+    private int reverseProcessingCode;
+    private List<AID> aidTables;
 
     public IVController getIvController() {
         return ivController;
@@ -63,6 +69,10 @@ public class PosOptions {
         return iccTaglist;
     }
 
+    /**
+     * Establece la lista de tags a usar en la transaccion ICC.
+     * @param iccTaglist
+     */
     public void setIccTaglist(int[] iccTaglist) {
         this.iccTaglist = iccTaglist;
     }
@@ -71,8 +81,45 @@ public class PosOptions {
         return nfcTagList;
     }
 
+    /**
+     * Establece la lista de tags a usar en la transaccion NFC.
+     * @param nfcTagList
+     */
     public void setNfcTagList(int[] nfcTagList) {
         this.nfcTagList = nfcTagList;
     }
 
+    public int getAuthProcessingCode() {
+        return authProcessingCode;
+    }
+
+    /**
+     * Establece el processing code para autorizacion.
+     *
+     * @param authProcessingCode
+     */
+    public void setAuthProcessingCode(int authProcessingCode) {
+        this.authProcessingCode = authProcessingCode;
+    }
+
+    public int getReverseProcessingCode() {
+        return reverseProcessingCode;
+    }
+
+    /**
+     * Establece el processing code para reversas.
+     *
+     * @return
+     */
+    public void setReverseProcessingCode(int reverseProcessingCode) {
+        this.reverseProcessingCode = reverseProcessingCode;
+    }
+
+    public List<AID> getAidTables() {
+        return aidTables;
+    }
+
+    public void setAidTables(List<AID> aidTables) {
+        this.aidTables = aidTables;
+    }
 }
