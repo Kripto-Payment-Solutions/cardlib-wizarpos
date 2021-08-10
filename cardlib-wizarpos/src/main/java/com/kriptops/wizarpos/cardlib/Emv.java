@@ -357,6 +357,15 @@ public class Emv {
         return emv_is_tag_present(tag) >= 0;
     }
 
+    public void close() {
+        iccOpenned = false;
+        msrOpenned = false;
+        nfcOpenned = false;
+        EMVJNIInterface.close_reader(EMV_READER_ICC);
+        EMVJNIInterface.close_reader(EMV_READER_NFC);
+        pos.getMsr().close();
+    }
+
     private class MsrListener implements OperationListener {
 
         @Override
