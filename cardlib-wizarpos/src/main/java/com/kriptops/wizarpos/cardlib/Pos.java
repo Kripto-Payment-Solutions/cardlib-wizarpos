@@ -57,10 +57,14 @@ public class Pos {
     }
 
     public Pos(PosApp posApp, PosOptions posOptions) {
-        // initialize pos options for local resource
         if (posOptions == null) {
             throw new IllegalArgumentException("posOptions is null" );
         }
+        // inicializa el manejador de vectores de inicializacion
+        // construye el bridge al terminal
+        this.terminal = new Terminal();
+        terminal.init(posApp.getApplicationContext());
+
         this.posOptions = new PosOptions();
         this.posOptions.setIvController(Util.nvl(posOptions.getIvController(), new MapIVController()));
         this.posOptions.setTrack2FitMode(Util.nvl(posOptions.getTrack2FitMode(), FitMode.F_FIT));
@@ -68,12 +72,6 @@ public class Pos {
         this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
         this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
         this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AID_TABLES));
-
-        // construye el bridge al terminal
-        this.terminal = new Terminal();
-        terminal.init(posApp.getApplicationContext());
-
-
 
         //debe ir antes que la creacion del emv kernel
         this.msr = new Msr(this.terminal.getMsr().getDevice());
@@ -142,8 +140,6 @@ public class Pos {
         });
         Log.d(Defaults.LOG_TAG, data.toString());
         //TODO elevar a otro handler de nivel aun mas superior
-        this.pinpad.close();
-        this.emv.close();
         if (goOnline != null) {
             goOnline.accept(data);
         } else {
@@ -299,7 +295,6 @@ public class Pos {
                 raiseError("pin", "" + code);
                 break;
         }
-        pinpad.close();
     }
 
     /**
@@ -360,8 +355,6 @@ public class Pos {
     }
 
     protected void raiseError(String source, String payload) {
-        this.pinpad.close();
-        this.emv.close();
         Log.d(Defaults.LOG_TAG, "error: " + source + " " + payload);
         if (this.onError != null) onError.accept(source, payload);
     }
@@ -413,10 +406,4 @@ public class Pos {
     public PosOptions getPosOptions() {
         return posOptions;
     }
-
-    public void close(){
-        this.emv.close();
-        this.pinpad.close();
-    }
-
 }
