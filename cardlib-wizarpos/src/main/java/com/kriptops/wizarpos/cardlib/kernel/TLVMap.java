@@ -16,6 +16,10 @@ public class TLVMap extends LinkedHashMap<String, Tag> {
 
     }
 
+    public String getValue(String tagName) {
+        return this.containsKey(tagName) ? this.get(tagName).getValue() : null;
+    }
+
     private class TLVTagTokenizer {
         private int bit8on = 0b10000000;
         private int bits1to5on = 0b00011111;
