@@ -316,7 +316,8 @@ public class Defaults {
     public static int[] REQUIRED_TAG_LIST = {
             0x57,
             0x5A,
-            0x5F34
+            0x5F34,
+            0x55
     };
 
     public static int[] DEFAULT_NFC_TAGLIST = {

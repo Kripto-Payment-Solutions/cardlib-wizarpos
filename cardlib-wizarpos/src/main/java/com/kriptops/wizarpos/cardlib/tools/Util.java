@@ -1,5 +1,7 @@
 package com.kriptops.wizarpos.cardlib.tools;
 
+import com.kriptops.wizarpos.cardlib.func.Supplier;
+
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
@@ -97,10 +99,22 @@ public class Util {
      * @param <T>   type of the value to test
      * @param value value to test
      * @param def   default value to use
-     * @return el valor de pruena o un valor por defecto en caso sea nulo
+     * @return el valor de prueba o un valor por defecto en caso sea nulo
      */
     public static <T> T nvl(T value, T def) {
         return value == null ? def : value;
+    }
+
+    /**
+     * Prueba un valor valor, si es nulo retorna un valor por defecto.
+     *
+     * @param <T>   type of the value to test
+     * @param value value to test
+     * @param supplier   default value supplier to use
+     * @return el valor de prueba o un valor por defecto en caso sea nulo
+     */
+    public static <T> T nvl(T value, Supplier<T> supplier) {
+        return value == null ? supplier.get() : value;
     }
 
 }

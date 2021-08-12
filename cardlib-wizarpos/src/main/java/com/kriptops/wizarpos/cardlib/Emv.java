@@ -306,20 +306,31 @@ public class Emv {
     private void processOnline() {
         TransactionData data = pos.data;
         if ("nfc".equals(data.captureType) || "icc".equals(data.captureType)) {
+            // lista de tags por defecto
             TLVMap requiredTags = new TLVMap(readTags(Defaults.REQUIRED_TAG_LIST));
-
-            if (requiredTags.containsKey("57") && data.track2 == null) {
-                data.track2 = requiredTags.get("57").getValue();
-            }
-            if (requiredTags.containsKey("5A") && data.maskedPan == null) {
-                data.maskedPan = requiredTags.get("5A").getValue();
-            }
-            if (requiredTags.containsKey("5F34") && data.panSequenceNumber == null) {
-                data.panSequenceNumber = requiredTags.get("5F34").getValue();
-            }
-            int[] tags = "nfc".equals(data.captureType) ? pos.getPosOptions().getNfcTagList() : pos.getPosOptions().getIccTaglist();
+            data.track2 = Util.nvl(
+                    data.track2,
+                    () -> requiredTags.getValue("57")
+            );
+            data.maskedPan = Util.nvl(
+                    data.maskedPan,
+                    () -> requiredTags.getValue("5A")
+            );
+            data.panSequenceNumber = Util.nvl(
+                    data.panSequenceNumber,
+                    () -> requiredTags.getValue("5F34")
+            );
+            data.aid = Util.nvl(
+                    data.aid,
+                    () -> requiredTags.getValue("55")
+            );
+            // tags adicionales segun tipo de lectura
+            int[] tags = "nfc".equals(data.captureType)
+                    ? pos.getPosOptions().getNfcTagList()
+                    : pos.getPosOptions().getIccTaglist();
             data.emvData = readTags(tags);
             if (data.maskedPan == null && data.track2 != null) {
+                //tratar de leer el masked pan desde el track 2
                 data.maskedPan = data.track2.split("[D=]")[0];
             }
         }

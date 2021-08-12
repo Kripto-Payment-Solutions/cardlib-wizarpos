@@ -15,6 +15,7 @@ public class TransactionData {
     public String track2Clear;
     public String emvData;
     public String emvDataClear;
+    public String aid;
 
 
     @Override
@@ -25,6 +26,7 @@ public class TransactionData {
                 "    bin:'" + bin + "',\n" +
                 "    panSequenceNumber:'" + panSequenceNumber + "',\n" +
                 "    track2:'" + track2 + "',\n" +
+                "    aid:'" + aid + "',\n" +
                 "    emvData:'" + emvData + "',\n" +
                 "    emvDataClear:'" + emvDataClear + "'\n" +
                 "}";
