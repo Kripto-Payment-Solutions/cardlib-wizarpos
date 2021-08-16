@@ -322,7 +322,7 @@ public class Emv {
             );
             data.aid = Util.nvl(
                     data.aid,
-                    () -> requiredTags.getValue("55")
+                    () -> requiredTags.getValue("84")
             );
             // tags adicionales segun tipo de lectura
             int[] tags = "nfc".equals(data.captureType)
