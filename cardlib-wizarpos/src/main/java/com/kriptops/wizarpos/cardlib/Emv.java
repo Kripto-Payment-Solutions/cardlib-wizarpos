@@ -13,22 +13,27 @@ import com.kriptops.wizarpos.cardlib.kernel.CardType;
 import com.kriptops.wizarpos.cardlib.kernel.TLVMap;
 import com.kriptops.wizarpos.cardlib.kernel.Tag;
 import com.kriptops.wizarpos.cardlib.func.Consumer;
-import com.kriptops.wizarpos.cardlib.kernel.TagName;
 import com.kriptops.wizarpos.cardlib.tools.Util;
 import com.wizarpos.emvsample.constant.Constant;
 
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.cloudpos.jniinterface.EMVJNIInterface.emv_get_candidate_list;
 import static com.cloudpos.jniinterface.EMVJNIInterface.emv_get_tag_data;
 import static com.cloudpos.jniinterface.EMVJNIInterface.emv_is_tag_present;
+import static com.cloudpos.jniinterface.EMVJNIInterface.emv_set_candidate_list_result;
 
 public class Emv {
 
     private static final int EMV_READER_ICC = 1;
     private static final int EMV_READER_NFC = 2;
-    private static final int EMV_READER_ONLINE_ONLY = 2;
+    //1 true, 0 false
+    private static final int EMV_READER_ONLINE_ONLY = 0;
 
     ExecutorService emvCallbacks = Executors.newFixedThreadPool(4);
 
@@ -68,7 +73,7 @@ public class Emv {
                 EMVJNIInterface.emv_kernel_initialize();
                 EMVJNIInterface.emv_set_kernel_attr(new byte[]{0x20}, 1);
                 EMVJNIInterface.emv_terminal_param_set_drl(new byte[]{0x00}, 1);
-                EMVJNIInterface.emv_set_force_online(1);
+                EMVJNIInterface.emv_set_force_online(EMV_READER_ONLINE_ONLY);
                 Log.i(Defaults.LOG_TAG, "kernel id:" + EMVJNIInterface.emv_get_kernel_id());
                 Log.i(Defaults.LOG_TAG, "process type:" + EMVJNIInterface.emv_get_process_type());
             }
@@ -113,7 +118,7 @@ public class Emv {
         pos.getMsr().close();
         Log.d(Defaults.LOG_TAG, "Inicializar EMV Kernel para " + cardType);
         pos.data.captureType = cardType.tag;
-        switch(cardType) {
+        switch (cardType) {
             case ICC:
                 //this.setTag(0x9f07, "FFC0");
                 // this.setTag(0x5f28, "");
@@ -156,25 +161,23 @@ public class Emv {
      * @param cvmLimit
      */
     public void initParams(String merchantId, String merchantName, String terminalId, String serialNumber, String clFloorLimit, String clTransactionLimit, String cvmLimit) {
-        if (merchantId == null) merchantId = "";
-        merchantId = (merchantId + "               ").substring(0, 15);
-        if (terminalId == null) terminalId = "";
-        terminalId = (terminalId + "               ").substring(8);
-        if (serialNumber == null) serialNumber = "0";
-        serialNumber = "00000000" + serialNumber;
-        serialNumber = serialNumber.substring(serialNumber.length() - 8, serialNumber.length());
+        merchantName = Util.nvl(merchantName, "COMERCIO");
+        merchantId = Util.left(Util.nvl(merchantId, "COMERCIO123") + "               ", 15);
+        terminalId = Util.right("00000000" + Util.nvl(terminalId, ""), 8);
+        serialNumber = Util.right("00000000" + Util.nvl(serialNumber, ""), 8);
         Tag[] tags = new Tag[]{
-                new Tag("5F2A", "0604"),
-                new Tag("5F36", "02"),
-                // merchant id should be padded with ' ' to 15 or truncated
                 new Tag("9F16", Util.toHexString(merchantId.getBytes())),
-                new Tag("9F1A", "0604"),
                 new Tag("9F1C", Util.toHexString(terminalId.getBytes())),
                 new Tag("9F1E", Util.toHexString(serialNumber.getBytes())),
-                new Tag("9F33", "E0F8C8"),
-                new Tag("9F35", "22"),
-                new Tag("9F40", "FF80F0A001"),
                 new Tag("9F4E", Util.toHexString(merchantName.getBytes())),
+                new Tag("5F2A", "0604"),
+                new Tag("5F36", "02"),
+                new Tag("9F1A", "0604"),
+                new Tag("9F33", "E0F8C8"),
+                // this is an online only terminal so terminal type is 21
+                new Tag("9F35", "21"),
+                //additional capabilities
+                new Tag("9F40", "FF80F0A001"),
                 new Tag("9F66", "36"),
                 new Tag("DF19", clFloorLimit),
                 new Tag("DF20", clTransactionLimit),
@@ -206,13 +209,19 @@ public class Emv {
     }
 
     /**
-     * @param amount                     monto en formato numerico sin decimales (los centavos son los dos ultimos digitos)
      * @param date                       en texto en formato yyMMdd
      * @param time                       en texto en formato HHmmss
      * @param transactionSequenceCounter contador de transaccion en formato 00000000
+     * @param amount                     monto en formato numerico sin decimales (los centavos son los dos ultimos digitos)
      * @param cashback                   indica si es una reversa
      */
-    public void beginTransaction(String date, String time, String transactionSequenceCounter, String amount, boolean cashback) {
+    public void beginTransaction(
+            String date,
+            String time,
+            String transactionSequenceCounter,
+            String amount,
+            boolean cashback) {
+        PosOptions options = pos.getPosOptions();
         EMVJNIInterface.emv_trans_initialize();
         //BIENES Y SERVICIOS
         // this.setTag(0x9f07, "FFC0");
@@ -220,11 +229,10 @@ public class Emv {
         this.setTag(0x9a, date);
         this.setTag(0x9f21, time);
         this.setTag(0x9f41, transactionSequenceCounter);
-        if (cashback) {
-            EMVJNIInterface.emv_set_trans_type(this.pos.getPosOptions().getReverseProcessingCode());
-        } else {
-            EMVJNIInterface.emv_set_trans_type(this.pos.getPosOptions().getAuthProcessingCode());
-        }
+        pos.data.type = cashback
+                ? options.getReverseProcessingCode()
+                : options.getAuthProcessingCode();
+        EMVJNIInterface.emv_set_trans_type(pos.data.type);
         this.setAmount(amount);
         this.setAmountOther("000");
 
@@ -290,9 +298,15 @@ public class Emv {
     }
 
     private void readAppData() {
-        pos.data.maskedPan = this.readTag(0x5A);
-        pos.data.track2 = this.readTag(0x57);
-        pos.data.panSequenceNumber = this.readTag(0x5F34);
+        TransactionData data = pos.data;
+
+        data.maskedPan = Util.nvl(data.maskedPan, () -> this.readTag(0x5a));
+        data.track2Clear = Util.nvl(data.track2Clear, () -> this.readTag(0x57));
+        data.track2 = data.track2Clear;
+        data.panSequenceNumber = Util.nvl(data.panSequenceNumber, () -> this.readTag(0x5f34));
+        data.expiry = Util.nvl(data.expiry, () -> this.readTag(0x5f24));
+        data.aid = Util.nvl(data.aid, () -> this.readTag(0x84));
+        data.ecBalance = Util.nvl(data.ecBalance, () -> this.readTag(0x9f79));
     }
 
     private void requestPin() {
@@ -306,25 +320,6 @@ public class Emv {
     private void processOnline() {
         TransactionData data = pos.data;
         if ("nfc".equals(data.captureType) || "icc".equals(data.captureType)) {
-            // lista de tags por defecto
-            TLVMap requiredTags = new TLVMap(readTags(Defaults.REQUIRED_TAG_LIST));
-            data.track2 = Util.nvl(
-                    data.track2,
-                    () -> requiredTags.getValue("57")
-            );
-            data.maskedPan = Util.nvl(
-                    data.maskedPan,
-                    () -> requiredTags.getValue("5A")
-            );
-            data.panSequenceNumber = Util.nvl(
-                    data.panSequenceNumber,
-                    () -> requiredTags.getValue("5F34")
-            );
-            data.aid = Util.nvl(
-                    data.aid,
-                    () -> requiredTags.getValue("84")
-            );
-            // tags adicionales segun tipo de lectura
             int[] tags = "nfc".equals(data.captureType)
                     ? pos.getPosOptions().getNfcTagList()
                     : pos.getPosOptions().getIccTaglist();
@@ -334,6 +329,9 @@ public class Emv {
                 data.maskedPan = data.track2.split("[D=]")[0];
             }
         }
+
+        pos.data.tsiFinal = readTag(0x9b);
+        pos.data.tvrFinal = readTag(0x95);
         pos.processOnline();
     }
 
@@ -461,29 +459,56 @@ public class Emv {
                     break;
                 case 0x01:
                     // aun hay mas pasos que hacer esperar y evaluar
-                    Log.d(Defaults.LOG_TAG, "EMV STAGE IS " + code);
                     switch (code) {
-                        case Constant.EMV_READ_APP_DATA:
+                        case Constant.EMV_CANDIDATE_LIST:
+                            Log.d(Defaults.LOG_TAG, "EMV_CANDIDATE_LIST " + code);
+                            List<String> aidList = getAidList();
+                            //TODO raise an event where we can choose the app and then continue
+                            int defaultApp = 0;
+                            pos.data.selectedApp = aidList.get(defaultApp);
+                            emv_set_candidate_list_result(defaultApp);
                             Emv.this.emvCallbacks.execute(Emv.this::next);
+                            break;
+                        case Constant.EMV_APP_SELECTED:
+                            Log.d(Defaults.LOG_TAG, "EMV_APP_SELECTED " + code);
+                            Emv.this.emvCallbacks.execute(Emv.this::next);
+                            break;
+                        case Constant.EMV_READ_APP_DATA:
+                            Log.d(Defaults.LOG_TAG, "EMV_READ_APP_DATA " + code);
                             Emv.this.readAppData();
+                            Emv.this.emvCallbacks.execute(Emv.this::next);
+                            break;
+                        case Constant.EMV_DATA_AUTH:
+                            Log.d(Defaults.LOG_TAG, "EMV_DATA_AUTH " + code);
+                            pos.data.tsi = readTag(0x9b);
+                            pos.data.tvr = readTag(0x95);
+                            Emv.this.emvCallbacks.execute(Emv.this::next);
+                            break;
+                        case Constant.EMV_OFFLINE_PIN:
+                            Log.d(Defaults.LOG_TAG, "EMV_OFFLINE_PIN " + code);
+                            //TODO FIX OFFLINE PIN IN CASES OFFLINE IS NEEDED
+                            Emv.this.emvCallbacks.execute(Emv.this::next);
                             break;
                         case Constant.EMV_ONLINE_ENC_PIN:
+                            Log.d(Defaults.LOG_TAG, "EMV_ONLINE_ENC_PIN " + code);
+                            EMVJNIInterface.emv_set_online_pin_entered(1);
                             Emv.this.requestPin();
                             break;
                         case Constant.EMV_PROCESS_ONLINE:
+                            Log.d(Defaults.LOG_TAG, "EMV_PROCESS_ONLINE " + code);
+                            pos.data.online = true;
+                            Emv.this.readAppData();
                             Emv.this.processOnline();
                             break;
-                        case Constant.EMV_CANDIDATE_LIST:
-                        case Constant.EMV_APP_SELECTED:
-                        case Constant.EMV_DATA_AUTH:
-                        case Constant.EMV_OFFLINE_PIN:
                         default:
+                            Log.d(Defaults.LOG_TAG, "EMV STAGE " + code);
                             Emv.this.emvCallbacks.execute(Emv.this::next);
                             break;
                     }
                 case 0x02:
                     //ha terminado la transaccion
-                    Log.d(Defaults.LOG_TAG, "TRANSACTION RESULT " + code);
+                    Log.d(Defaults.LOG_TAG, "TRANSACTION RESULT 2 " + code);
+                    //some offline rejections need process online anyways
                     //TODO enviar al success o failed handler
                     break;
             }
@@ -510,6 +535,28 @@ public class Emv {
                     Emv.this.pos.raiseError("emv", "card " + i);
             }
         }
+    }
+
+    private static List<String> getAidList() {
+        byte[] buffer = new byte[2048];
+        int read = emv_get_candidate_list(buffer, buffer.length);
+        //aids is length (1 byte), value (length bytes)
+        int offset = 0;
+        List<String> list = new LinkedList<>();
+        while (offset < read) {
+            // lee la longitud
+            int length = buffer[offset];
+            // mueve el offset luego de la longitud
+            offset++;
+            // crea el espacio para el aid
+            byte[] aid = new byte[length];
+            // lee el aid
+            System.arraycopy(buffer, offset, aid, 0, length);
+            list.add(Util.toHexString(aid));
+            // mueve el offset luego del aid
+            offset+=length;
+        }
+        return list;
     }
 
     private static String getLibPath(Context context) {
