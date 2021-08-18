@@ -117,4 +117,12 @@ public class Util {
         return value == null ? supplier.get() : value;
     }
 
+    public static String left(String text, int length) {
+        return text.substring(0,length);
+    }
+
+    public static String right(String text, int length) {
+        return text.substring(text.length()-length);
+    }
+
 }

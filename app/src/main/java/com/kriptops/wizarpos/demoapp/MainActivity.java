@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.masterKey = this.findViewById(R.id.txt_llave_master);
-        //Setear con la configuracion de la MK de pruebas asignada
-        this.masterKey.setText("A283C38D7D7366C6DEFD9B6FFBF45783");
+        // Setear con la configuracion de la MK de pruebas asignada
+        // this.masterKey.setText("A283C38D7D7366C6DEFD9B6FFBF45783");
         this.pinKey = this.findViewById(R.id.txt_llave_pin);
         this.dataKey = this.findViewById(R.id.txt_llave_datos);
         this.plainText = this.findViewById(R.id.txt_texto_plano);
@@ -163,15 +163,14 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     public void btn_do_trade(View view) {
-        Log.d(Defaults.LOG_TAG, "Imprimir Ticket");
-
+        this.log.setText("Present Card");
         getPos().configTerminal( // este metodo se puede llamar una sola vez
                 "PK000001", // tag 9F16 identidad del comercio
                 "PRUEBA KRIPTO", // tag 9F4E nombre del comercio
                 "00000001", // tag 9F1C identidad del terminal dentro del comercio (no es el serial number)
                 "000000000000", // floor limit contactless
-                "000000100000", // transaction limit contactless
-                "000000008000" // cvm limit (desde que monto pasan de ser quick a full)
+                "000000015000", // transaction limit contactless
+                "000000015000" // cvm limit (desde que monto pasan de ser quick a full)
         );
 
         getPos().setPinpadCustomUI(true); // cambia la pantalla de fondo cuando se solicita el uso del pinpad

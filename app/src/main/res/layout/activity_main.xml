@@ -27,7 +27,9 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_llaves" />
+                android:text="@string/title_llaves"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_master"
@@ -36,7 +38,9 @@
                 android:digits="@string/hex_digits"
                 android:ems="10"
                 android:hint="@string/txt_llave_maestra"
-                android:inputType="textCapCharacters" />
+                android:inputType="textCapCharacters"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_pin"
@@ -45,7 +49,9 @@
                 android:digits="@string/hex_digits"
                 android:ems="10"
                 android:hint="@string/txt_llave_pin"
-                android:inputType="textCapCharacters" />
+                android:inputType="textCapCharacters"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_datos"
@@ -54,12 +60,16 @@
                 android:digits="@string/hex_digits"
                 android:ems="10"
                 android:hint="@string/txt_llave_datos"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="gone">
 
                 <Button
                     android:id="@+id/btn_generar"
@@ -81,21 +91,27 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Impresion" />
+                android:text="Impresion"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_imprimir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="btn_imprimir_ticket"
-                android:text="@string/btn_imprimir" />
+                android:text="@string/btn_imprimir"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Cifrado" />
+                android:text="Cifrado"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_texto_plano"
@@ -103,7 +119,9 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="Texto"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_texto_cifrado_hex"
@@ -113,14 +131,18 @@
                 android:ems="10"
                 android:focusable="false"
                 android:hint="Texto cifrado"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="btn_encriptar"
-                android:text="@string/btn_cifrar" />
+                android:text="@string/btn_cifrar"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/textView4"
