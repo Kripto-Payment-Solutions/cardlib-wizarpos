@@ -387,6 +387,8 @@ public class Emv {
                         pos.data.track2 = track2Hex;
                         pos.data.maskedPan = track2Hex.split("D")[0];
 
+                        //TODO retirar del log.
+                        Log.d(Defaults.LOG_TAG, "TRACK 2 MSR: " + pos.data.track2);
                         //Strip cardnumber && strip countryCode
                         String serviceCode = track2ascii.substring(track2ascii.indexOf('='));
                         if (track2ascii.startsWith("59")) serviceCode = serviceCode.substring(3);
