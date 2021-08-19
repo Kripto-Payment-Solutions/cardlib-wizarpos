@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         setContentView(R.layout.activity_main);
         this.masterKey = this.findViewById(R.id.txt_llave_master);
         // Setear con la configuracion de la MK de pruebas asignada
-        // this.masterKey.setText("A283C38D7D7366C6DEFD9B6FFBF45783");
+        this.masterKey.setText("A283C38D7D7366C6DEFD9B6FFBF45783");
         this.pinKey = this.findViewById(R.id.txt_llave_pin);
         this.dataKey = this.findViewById(R.id.txt_llave_datos);
         this.plainText = this.findViewById(R.id.txt_texto_plano);
