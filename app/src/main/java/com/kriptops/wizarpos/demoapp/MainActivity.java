@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                 "210531", // fecha en formato
                 "140900",
                 "00000001",
-                "30000"
+                "300"
                 //,false //agregar para hacer el cashback
         );
     }
