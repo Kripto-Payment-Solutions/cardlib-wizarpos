@@ -81,7 +81,6 @@ public class Pos {
 
         //carga los AID y CAPK por defecto
         this.loadAids(this.posOptions.getAidTables());
-        this.loadCapks(Defaults.CAPKS);
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
         this.setPinpadCustomUI(false);

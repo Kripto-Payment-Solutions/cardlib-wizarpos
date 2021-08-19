@@ -5,6 +5,7 @@ import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.crypto.FitMode;
 import com.kriptops.wizarpos.cardlib.kernel.AID;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**

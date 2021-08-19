@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.kriptops.wizarpos.cardlib.tools.NumberUtil;
 import com.kriptops.wizarpos.cardlib.tools.StringUtil;
+import com.kriptops.wizarpos.cardlib.tools.Util;
 
 public class AID {
     private String aid;                      // Application Identifier
@@ -44,6 +45,9 @@ public class AID {
     private byte cvmCapNoCVMRequired;
     private byte mscvmCapCVMRequired;
     private byte mscvmCapNoCVMRequired;
+
+    // Visa peru
+    private String auc;
 
     private byte contactlessKernelID;
 
@@ -397,6 +401,14 @@ public class AID {
         this.contactlessKernelID = contactlessKernelID;
     }
 
+    public String getAuc() {
+        return auc;
+    }
+
+    public void setAuc(String auc) {
+        this.auc = auc;
+    }
+
     public byte[] getDataBuffer() {
         byte[] data = new byte[512];
         int offset = 0;
@@ -414,6 +426,19 @@ public class AID {
         data[offset + 2] = 0x01;
         data[offset + 3] = needCompleteMatching;
         offset += 4;
+
+        /*
+        //auc
+        if (this.auc != null) {
+            byte[] value = Util.toByteArray(this.auc);
+            data[offset] = (byte) 0x9f;
+            data[offset + 1] = (byte) 0x07;
+            data[offset + 2] = 0x02;
+            data[offset + 3] = value[0];
+            data[offset + 4] = value[1];
+            offset += 5;
+        }*/
+
         // 3 appVersion
         if (appVersionNumber != null && appVersionNumber.length() == 4) {
             data[offset] = (byte) 0x9F;
@@ -707,6 +732,7 @@ public class AID {
                 ", mscvmCapCVMRequired=" + mscvmCapCVMRequired +
                 ", mscvmCapNoCVMRequired=" + mscvmCapNoCVMRequired +
                 ", contactlessKernelID=" + contactlessKernelID +
+                ", auc='" + auc + "'" +
                 '}';
     }
 }

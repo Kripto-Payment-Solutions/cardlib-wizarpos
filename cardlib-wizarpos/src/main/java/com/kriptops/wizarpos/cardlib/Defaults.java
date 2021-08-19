@@ -52,6 +52,7 @@ public class Defaults {
         aid.setMscvmCapCVMRequired((byte) 0x00);
         aid.setMscvmCapNoCVMRequired((byte) 0x00);
         aid.setContactlessKernelID((byte) 0xFF);
+        aid.setAuc("FFC0");
         tables.add(aid);
 
         aid = new AID();
@@ -90,6 +91,7 @@ public class Defaults {
         aid.setCvmCapNoCVMRequired((byte) 0x00);
         aid.setMscvmCapCVMRequired((byte) 0x00);
         aid.setMscvmCapNoCVMRequired((byte) 0x00);
+        aid.setAuc("FFC0");
         tables.add(aid);
 
         aid = new AID();
@@ -128,6 +130,7 @@ public class Defaults {
         aid.setCvmCapNoCVMRequired((byte) 0x00);
         aid.setMscvmCapCVMRequired((byte) 0x00);
         aid.setMscvmCapNoCVMRequired((byte) 0x00);
+        aid.setAuc("FFC0");
         tables.add(aid);
 
         // AIDS de Mastercard
