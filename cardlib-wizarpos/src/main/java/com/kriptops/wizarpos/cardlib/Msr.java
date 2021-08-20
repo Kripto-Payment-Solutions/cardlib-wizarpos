@@ -26,7 +26,7 @@ public class Msr extends CloseableDeviceWrapper<MSRDevice> {
             this.device.listenForSwipe(listener, TimeConstants.FOREVER);
             return true;
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "no puede iniciar el msr");
+            // Log.d(Defaults.LOG_TAG, "no puede iniciar el msr");
             return false;
         }
     }

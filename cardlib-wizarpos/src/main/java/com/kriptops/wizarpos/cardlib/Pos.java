@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cloudpos.DeviceException;
 import com.cloudpos.OperationResult;
 import com.cloudpos.POSTerminal;
+import com.cloudpos.jniinterface.EMVJNIInterface;
 import com.cloudpos.msr.MSRDevice;
 import com.cloudpos.pinpad.PINPadDevice;
 import com.cloudpos.pinpad.PINPadOperationResult;
@@ -80,7 +81,6 @@ public class Pos {
         this.withPinpad(this::configPinpad);
 
         //carga los AID y CAPK por defecto
-        this.loadAids(this.posOptions.getAidTables());
         this.setTagList(Defaults.TAG_LIST);
         this.pinpad.setTimeout(Defaults.PINPAD_REQUEST_TIMEOUT);
         this.setPinpadCustomUI(false);
@@ -118,8 +118,12 @@ public class Pos {
         );
     }
 
+    public void configTerminal(EMVConfig config) {
+        this.emv.configTerminal(config);
+    }
+
     protected void processOnline() {
-        Log.d(Defaults.LOG_TAG, data.toString());
+        // Log.d(Defaults.LOG_TAG, data.toString());
         int panSize = data.maskedPan.length();
         int las4index = panSize - 4;
         data.bin = data.maskedPan.substring(0, 6);
@@ -137,7 +141,7 @@ public class Pos {
             data.track2 = this.posOptions.getTrack2PaddingMode().pad(data.track2);
             data.track2 = this.pinpad.encryptHex(data.track2);
         });
-        Log.d(Defaults.LOG_TAG, data.toString());
+        // Log.d(Defaults.LOG_TAG, data.toString());
         //TODO elevar a otro handler de nivel aun mas superior
         if (goOnline != null) {
             goOnline.accept(data);
@@ -153,20 +157,6 @@ public class Pos {
 
     public void setTagList(int[] tagList) {
         this.emv.setTaglist(tagList);
-    }
-
-    public void loadAids(List<AID> aidTables) {
-        List<String> aids = new LinkedList<>();
-        for (AID aid : aidTables) aids.add(Util.toHexString(aid.getDataBuffer()));
-        emv.initAIDS(aids.toArray(new String[aids.size()]));
-    }
-
-    public void loadCapks(Collection<String> capks) {
-        emv.initCAPKS(capks.toArray(new String[capks.size()]));
-    }
-
-    public void loadCapks(String[] capks) {
-        emv.initCAPKS(capks);
     }
 
     private void configPinpad(Pinpad pinpad) {
@@ -204,14 +194,14 @@ public class Pos {
             device.open();
         } catch (DeviceException e) {
             //TODO convertir en excepciones nombradas y republicar
-            Log.d(Defaults.LOG_TAG, "No se puede abrir la impresora", e);
+            // Log.d(Defaults.LOG_TAG, "No se puede abrir la impresora", e);
             throw new RuntimeException(e);
         }
         consumer.accept(new Printer(device));
         try {
             device.close();
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "No se puede cerrar la impresora", e);
+            // Log.d(Defaults.LOG_TAG, "No se puede cerrar la impresora", e);
         }
     }
 
@@ -300,7 +290,6 @@ public class Pos {
      * Se usa para iniciar el proceso de pedido de pin.
      */
     public void callPin() {
-        if (data.maskedPan == null) this.data.maskedPan = emv.readTag(0x5A);
         String pan = this.data.maskedPan;
         this.waitForPinpad(pan);
     }
@@ -322,6 +311,7 @@ public class Pos {
         if ("msr".equals(data.captureType)) {
             processOnline();
         } else {
+            EMVJNIInterface.emv_set_online_pin_entered(1);
             this.emv.next();
         }
     }
@@ -354,7 +344,7 @@ public class Pos {
     }
 
     protected void raiseError(String source, String payload) {
-        Log.d(Defaults.LOG_TAG, "error: " + source + " " + payload);
+        // Log.d(Defaults.LOG_TAG, "error: " + source + " " + payload);
         if (this.onError != null) onError.accept(source, payload);
     }
 
@@ -363,7 +353,7 @@ public class Pos {
     }
 
     protected void raiseWarning(String source, String payload) {
-        Log.d(Defaults.LOG_TAG, "warning: " + source + " " + payload);
+        // Log.d(Defaults.LOG_TAG, "warning: " + source + " " + payload);
         if (this.onWarning != null) onWarning.accept(source, payload);
     }
 

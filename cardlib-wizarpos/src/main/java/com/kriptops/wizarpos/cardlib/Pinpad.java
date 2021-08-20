@@ -78,7 +78,7 @@ public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implement
             this.getDevice().updateUserKey(Defaults.MK_SLOT, Defaults.UK_PIN_SLOT, pinKey);
             this.getDevice().updateUserKey(Defaults.MK_SLOT, Defaults.UK_DATA_SLOT, dataKey);
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "No se puede actualizar las llaves", e);
+            // Log.d(Defaults.LOG_TAG, "No se puede actualizar las llaves", e);
             return false;
         }
 
@@ -120,7 +120,7 @@ public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implement
                     dataIv.length
             );
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "No puede encryptar");
+            // Log.d(Defaults.LOG_TAG, "No puede encryptar");
             throw new RuntimeException(e);
         }
     }
@@ -141,7 +141,7 @@ public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implement
             this.getDevice().setupCallbackHandler(new PinPadCallbackHandler() {
                 @Override
                 public void processCallback(byte[] bytes) {
-                    Log.d(Defaults.LOG_TAG, "pinpad event " + Util.toHexString(bytes));
+                    // Log.d(Defaults.LOG_TAG, "pinpad event " + Util.toHexString(bytes));
                     if (digitsAvailableListener != null) {
                         int digits = bytes[0];
                         digitsAvailableListener.accept(digits);
@@ -150,7 +150,7 @@ public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implement
 
                 @Override
                 public void processCallback(int i, int i1) {
-                    Log.d(Defaults.LOG_TAG, "pinpad event a:" + i + ", b: " + i1);
+                    // Log.d(Defaults.LOG_TAG, "pinpad event a:" + i + ", b: " + i1);
                 }
             });
             this.getDevice().listenForPinBlock(
@@ -162,7 +162,7 @@ public class Pinpad extends CloseableDeviceWrapper<PINPadExtendDevice> implement
             );
             return true;
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "Error al solicitar el pin");
+            e.printStackTrace();
         }
         return false;
     }

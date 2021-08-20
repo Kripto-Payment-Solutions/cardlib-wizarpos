@@ -32,7 +32,7 @@ public abstract class CloseableDeviceWrapper<T extends Device> implements Closea
                 device.open();
                 return (this.open = true);
             } catch (DeviceException e) {
-                Log.d(Defaults.LOG_TAG, "No se puede abrir el dispositivo" + device.toString(), e);
+                // Log.d(Defaults.LOG_TAG, "No se puede abrir el dispositivo" + device.toString(), e);
             }
         }
         return false;
@@ -43,7 +43,7 @@ public abstract class CloseableDeviceWrapper<T extends Device> implements Closea
         try {
             device.close();
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "No se puede cerrar el dispositivo", e);
+            // Log.d(Defaults.LOG_TAG, "No se puede cerrar el dispositivo", e);
         }
         this.open = false;
     }
