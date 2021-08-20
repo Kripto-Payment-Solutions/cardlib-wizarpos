@@ -1,30 +1,21 @@
 package com.kriptops.wizarpos.cardlib.kernel;
 
 public enum TagName {
-
-    PAN("5A"),
-    Transaction_Currency_Code("5F2A"),
-    PAN_Sequence_Number("5F34"),
-    Application_Interchange_Profile("82"),
-    DF_Name("84"),
-    Terminal_Verification_Results("95"),
-    Transaction_Date("9A"),
-    Transaction_Type("9C"),
-    Amount_Authorised_Numeric("9F02"),
-    Amount_Other_Numeric("9F03"),
-    Application_Version_Number("9F09"),
-    Issuer_Application_Data("9F10"),
-    Terminal_Country_Code("9F1A"),
-    Application_Cryptogram("9F26"),
-    Cryptogram_Information_Data("9F27"),
-    Terminal_Capabilities("9F33"),
-    CVM_Results("9F34"),
-    Terminal_Type("9F35"),
-    Application_Transaction_Counter("9F36"),
-    Unpredictable_Number("9F37"),
-    Additional_Terminal_Capabilities("9F40"),
-    Transaction_Sequence_Counter("9F41"),
-    IFD_Serial_Number("9F1E");
+    TRANSACTION_CURRENCY_CODE("5F2A"),
+    TRANSACTION_CURRENCY_EXPONENT("5F36"),
+    MERCHANT_IDENTIFIER("9F16"),
+    TERMINAL_COUNTRY_CODE("9F1A"),
+    TERMINAL_IDENTIFICATION("9F1C"),
+    IFD_SERIAL_NUMBER("9F1E"),
+    TERMINAL_CAPABILITIES("9F33"),
+    TERMINAL_TYPE("9F35"),
+    ADDITIONAL_TERMINAL_CAPABILITIES("9F40"),
+    MERCHANT_NAME_AND_LOCATION("9F4E"),
+    TTQ_1("9F66"),
+    WP_CONTACTLESS_FLOOR_LIMIT("DF19"),
+    WP_CONTACTLESS_TRANSACTION_LIMIT("DF20"),
+    WP_CONTACTLESS_CVM_LIMIT("DF21"),
+    WP_STATUS_CHECK_SUPPORT("EF01");
 
     public final int number;
     public final String value;
@@ -32,6 +23,10 @@ public enum TagName {
     TagName(String value) {
         this.value = value;
         this.number = Integer.parseInt(value, 16);
+    }
+
+    public Tag tag(String value) {
+        return new Tag(this.value, value);
     }
 
 }

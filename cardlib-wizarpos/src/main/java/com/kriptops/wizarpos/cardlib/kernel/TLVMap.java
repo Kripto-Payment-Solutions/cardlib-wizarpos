@@ -4,10 +4,14 @@ import java.util.LinkedHashMap;
 
 public class TLVMap extends LinkedHashMap<String, Tag> {
 
+    public TLVMap() {
+
+    }
+
     public TLVMap(String tlv) {
         super();
 
-        this.put("FFFF", new Tag("FFFF", tlv));
+        // this.put("FFFF", new Tag("FFFF", tlv));
         TLVTagTokenizer st = new TLVTagTokenizer(tlv);
 
         for (Tag tag = st.nextTag(); tag != null; tag = st.nextTag()) {

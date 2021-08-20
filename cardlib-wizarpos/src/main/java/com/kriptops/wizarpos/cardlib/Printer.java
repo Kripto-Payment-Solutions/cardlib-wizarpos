@@ -73,7 +73,7 @@ public class Printer {
             format.setParameter(align.property, align.value);
             printer.printText(format, str);
         } catch (Exception e) {
-            Log.d(Defaults.LOG_TAG, "Can't print", e);
+            // Log.d(Defaults.LOG_TAG, "Can't print", e);
             //TODO convertir en named runtime exceptions
             throw new RuntimeException(e);
         }
@@ -106,7 +106,7 @@ public class Printer {
         try {
             printer.printText("\n");
         } catch (DeviceException e) {
-            Log.d(Defaults.LOG_TAG, "Can't feed new line", e);
+            // Log.d(Defaults.LOG_TAG, "Can't feed new line", e);
             //TODO convertir en named runtime exceptions
             throw new RuntimeException(e);
         }

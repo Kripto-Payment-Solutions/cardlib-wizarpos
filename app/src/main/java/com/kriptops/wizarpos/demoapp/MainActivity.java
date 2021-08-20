@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kriptops.wizarpos.cardlib.Defaults;
+import com.kriptops.wizarpos.cardlib.EMVConfig;
 import com.kriptops.wizarpos.cardlib.Pinpad;
 import com.kriptops.wizarpos.cardlib.Pos;
 import com.kriptops.wizarpos.cardlib.Printer;
@@ -69,17 +70,17 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     public void btn_generar_llaves(View btn) {
-        Log.d(Defaults.LOG_TAG, "Generar llaves");
+        // Log.d(Defaults.LOG_TAG, "Generar llaves");
         byte[] data = new byte[16];
         Random r = new Random();
 
         r.nextBytes(data);
         pinKey.setText(Util.toHexString(data));
-        Log.d(Defaults.LOG_TAG, "llave de pin " + pinKey.getText());
+        // Log.d(Defaults.LOG_TAG, "llave de pin " + pinKey.getText());
 
         r.nextBytes(data);
         dataKey.setText(Util.toHexString(data));
-        Log.d(Defaults.LOG_TAG, "llave de datos " + dataKey.getText());
+        // Log.d(Defaults.LOG_TAG, "llave de datos " + dataKey.getText());
 
 
         ToneGenerator tone = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
@@ -87,13 +88,13 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     public void btn_inyectar_llaves(View btn) {
-        Log.d(Defaults.LOG_TAG, "Inyectar llaves");
+        // Log.d(Defaults.LOG_TAG, "Inyectar llaves");
         String masterKey = this.masterKey.getText().toString();
         //salida de la call a init en OT
         String ewkPinHex = protectKey(masterKey, pinKey.getText().toString());
-        Log.d(Defaults.LOG_TAG, "llave de pin " + ewkPinHex);
+        // Log.d(Defaults.LOG_TAG, "llave de pin " + ewkPinHex);
         String ewkDataHex = protectKey(masterKey, dataKey.getText().toString());
-        Log.d(Defaults.LOG_TAG, "llave de datos " + ewkDataHex);
+        // Log.d(Defaults.LOG_TAG, "llave de datos " + ewkDataHex);
 
         boolean [] response = new boolean[1];
         getPos().withPinpad(pinpad -> {
@@ -102,23 +103,6 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                     ewkDataHex
             );
         });
-
-        //tenerlo en algun lugar, la lib tiene valores por defecto
-        //Collection<String> aids = Arrays.asList(
-        //        "9F0607A0000000031010DF0101009F08020096DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0607A0000000041010DF0101009F08020002DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120",
-        //        "9F0607A0000000651010DF0101009F08020200DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0607A0000000999090DF0101009F08020009DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0606A00000999901DF0101009F08029999DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0608A000000025010501DF0101009F08020001DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0605A122334455DF0101009F08021234DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0208409F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0607A0000003330101DF0101009F08020030DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0607A0000001523010DF0101009F08020001DF11050000000000DF12050000000000DF130500000000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000",
-        //        "9F0607A0000002281010DF0101009F08020002DF1105BC40BC8000DF1205BC40BC8000DF130500100000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF812406000000100000DF812506000000100000DF81180160DF81190168DF811E0120DF812C0120DF811B0120DF810C0102",
-        //        "9F0607A0000002282010DF0101009F0802008CDF1105BC40BC8000DF1205BC40BC8000DF130500100000009F1B0400002710DF150400000000DF160100DF170100DF140B9F37049F47018F019F3201DF1801015004414944329F12064145454646468701009F160F3132333435363738202020202020209F01060000001234569F150233339F3901809F3C0201569F3D0102DF22039F0804DF1906000000200000DF2106000000200000DF810C0103"
-        //);
-        //getPos().loadAids(aids);
-
 
         this.runOnUiThread(() -> {
             if (response[0]) {
@@ -133,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     public void btn_encriptar(View btn) {
-        Log.d(Defaults.LOG_TAG, "Cifrar");
+        // Log.d(Defaults.LOG_TAG, "Cifrar");
         //este primer paso es necesario porque yo tengo data ascii y no hex string
         getPos().withPinpad(this::encrypt);
     }
@@ -141,13 +125,13 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     public void encrypt(Pinpad pinpad) {
         String plainText = this.plainText.getText().toString();
         String plainHex = Util.toHexString(plainText.getBytes(), true);
-        Log.d(Defaults.LOG_TAG, "Encriptando: " + plainHex);
+        // Log.d(Defaults.LOG_TAG, "Encriptando: " + plainHex);
         String encrypted = getPos().getPinpad().encryptHex(plainHex);
         this.encriptedText.setText(encrypted);
     }
 
     public void btn_imprimir_ticket(View btn) {
-        Log.d(Defaults.LOG_TAG, "Imprimir Ticket");
+        // Log.d(Defaults.LOG_TAG, "Imprimir Ticket");
         getPos().withPrinter(this::print);
     }
 
@@ -164,14 +148,30 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
 
     public void btn_do_trade(View view) {
         this.log.setText("Present Card");
-        getPos().configTerminal( // este metodo se puede llamar una sola vez
+        /*getPos().configTerminal( // este metodo se puede llamar una sola vez
                 "PK000001", // tag 9F16 identidad del comercio
                 "PRUEBA KRIPTO", // tag 9F4E nombre del comercio
                 "00000001", // tag 9F1C identidad del terminal dentro del comercio (no es el serial number)
                 "000000000000", // floor limit contactless
                 "000000015000", // transaction limit contactless
                 "000000015000" // cvm limit (desde que monto pasan de ser quick a full)
-        );
+        );*/
+        EMVConfig config = new EMVConfig();
+        config.currencyCode = "0604";
+        config.currencyExponent = "02";
+        config.merchantIdentifier = "12345678";
+        config.terminalCountryCode = "0604";
+        config.terminalIdentification = "1234";
+        config.terminalCapabilities = "E0B8C8";
+        config.terminalType = "22";
+        config.additionalTerminalCapabilities = "FF80F0A001";
+        config.merchantNameAndLocation = "COMERCIO DE PRUEBA";
+        config.ttq1 = "36";
+        config.contactlessFloorLimit = "000000000000";
+        config.contactlessCvmLimit = "000000015000";
+        config.contactlessTransactionLimit = "009999999999";
+        config.statusCheckSupport = "00";
+        getPos().configTerminal(config);
 
         getPos().setPinpadCustomUI(true); // cambia la pantalla de fondo cuando se solicita el uso del pinpad
         getPos().setOnPinRequested(this::onPinRequested);
@@ -200,16 +200,16 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         getPos().setOnError(this::onError);
         getPos().setGoOnline(this::online);
         getPos().beginTransaction( // ete metodo se llama en cada transaccion
-                "210531", // fecha en formato
-                "140900",
+                "210820", // fecha en formato
+                "030800",
                 "00000001",
-                "300"
+                "10000"
                 //,false //agregar para hacer el cashback
         );
     }
 
     private void online(TransactionData data) {
-        Log.d(Defaults.LOG_TAG, "online message " + data);
+        // Log.d(Defaults.LOG_TAG, "online message " + data);
         this.runOnUiThread(() -> {
             //enviar a autorizar
             this.log.setText("Online Message " + data);
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     private void onError(String source, String code) {
-        Log.d(Defaults.LOG_TAG, "Controlar el error de lectura de datos");
+        // Log.d(Defaults.LOG_TAG, "Controlar el error de lectura de datos");
         this.runOnUiThread(() -> {
             this.log.setText("Error " + source + " " + code);
         });
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
     }
 
     private void onPinDigit(Integer pinDigits) {
-        Log.d(Defaults.LOG_TAG, "cantidad de digitos del pin " + pinDigits);
+        // Log.d(Defaults.LOG_TAG, "cantidad de digitos del pin " + pinDigits);
         this.runOnUiThread(() -> {
             if (pinDigits > 0) {
                 this.log.setText("requiriendo el pin " + "********".substring(0, pinDigits));

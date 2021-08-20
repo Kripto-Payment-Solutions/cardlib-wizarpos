@@ -50,6 +50,14 @@ public class Util {
         return toHexString(data, false);
     }
 
+    public static String toHexString(String text, int fitSize, char fitChar) {
+        while (text.length() < fitSize) {
+            text = fitChar + text;
+        }
+        text = text.substring(text.length() - fitSize);
+        return toHexString(text);
+    }
+
     /**
      * @param text        texto a codificar bytes en hex
      * @param withPadding indica si se completa el hex string con F hasta completar un octeto
