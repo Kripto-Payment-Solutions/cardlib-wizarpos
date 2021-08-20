@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         config.terminalCountryCode = "0604";
         config.terminalIdentification = "1234";
         config.terminalCapabilities = "E0F8C8";
-        config.terminalType = "22";
+        config.terminalType = "21";
         config.additionalTerminalCapabilities = "FF80F0A001";
         config.merchantNameAndLocation = "COMERCIO DE PRUEBA";
         config.ttq1 = "36";
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
                 "210820", // fecha en formato
                 "030800",
                 "00000001",
-                "10000"
+                "100"
                 //,false //agregar para hacer el cashback
         );
     }
