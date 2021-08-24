@@ -162,7 +162,9 @@ public class MainActivity extends AppCompatActivity implements PosActivity {
         config.merchantIdentifier = "12345678";
         config.terminalCountryCode = "0604";
         config.terminalIdentification = "1234";
-        config.terminalCapabilities = "E0F8C8";
+        //config.terminalCapabilities = "E0F8C8";
+        //pago rapido
+        config.terminalCapabilities = "E008C8";
         config.terminalType = "21";
         config.additionalTerminalCapabilities = "FF80F0A001";
         config.merchantNameAndLocation = "COMERCIO DE PRUEBA";

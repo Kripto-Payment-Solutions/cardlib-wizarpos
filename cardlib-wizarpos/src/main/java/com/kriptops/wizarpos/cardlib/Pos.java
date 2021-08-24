@@ -308,10 +308,16 @@ public class Pos {
      * Se usa para continuar procesando la transaccion despues de pedir el pin.
      */
     public void continueAfterPin() {
+        this.continueAfterPin(true);
+    }
+
+    public void continueAfterPin(boolean executed) {
         if ("msr".equals(data.captureType)) {
             processOnline();
         } else {
-            EMVJNIInterface.emv_set_online_pin_entered(1);
+            if (executed) {
+                EMVJNIInterface.emv_set_online_pin_entered(1);
+            }
             this.emv.next();
         }
     }
@@ -390,6 +396,15 @@ public class Pos {
      */
     public void setGoOnline(Consumer<TransactionData> goOnline) {
         this.goOnline = goOnline;
+    }
+
+    /**
+     * Accede a la data de la transaccion en curso.
+     *
+     * @return
+     */
+    public TransactionData getTransactionData() {
+        return this.data;
     }
 
     public PosOptions getPosOptions() {

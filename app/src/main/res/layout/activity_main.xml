@@ -28,8 +28,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_llaves"
-                android:visibility="visible"
-                tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_master"
@@ -39,8 +39,8 @@
                 android:ems="10"
                 android:hint="@string/txt_llave_maestra"
                 android:inputType="textCapCharacters"
-                android:visibility="visible"
-                tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_pin"
@@ -50,8 +50,8 @@
                 android:ems="10"
                 android:hint="@string/txt_llave_pin"
                 android:inputType="textCapCharacters"
-                android:visibility="visible"
-                tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <EditText
                 android:id="@+id/txt_llave_datos"
@@ -61,15 +61,15 @@
                 android:ems="10"
                 android:hint="@string/txt_llave_datos"
                 android:inputType="textPersonName"
-                android:visibility="visible"
-                tools:visibility="visible" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:visibility="visible"
-                tools:visibility="visible">
+                android:visibility="gone"
+                tools:visibility="gone">
 
                 <Button
                     android:id="@+id/btn_generar"

@@ -93,7 +93,7 @@ public class Emv {
                     // Log.d(Defaults.LOG_TAG, "AID: " + aid);
                     byte[] buffer = Util.toByteArray(aid);
                     EMVJNIInterface.emv_aidparam_add(buffer, buffer.length);
-                    //EMVJNIInterface.emv_contactless_aidparam_add(buffer, buffer.length);
+                    EMVJNIInterface.emv_contactless_aidparam_add(buffer, buffer.length);
                 }
 
                 EMVJNIInterface.emv_set_force_online(EMV_READER_ONLINE_ONLY);
