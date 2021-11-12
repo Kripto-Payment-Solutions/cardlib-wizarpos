@@ -21,6 +21,7 @@ public class PosOptions {
     private byte authProcessingCode;
     private byte reverseProcessingCode;
     private List<AID> aidTables;
+    private String[] msrBinWhitelist;
 
     public IVController getIvController() {
         return ivController;
@@ -122,5 +123,13 @@ public class PosOptions {
 
     public void setAidTables(List<AID> aidTables) {
         this.aidTables = aidTables;
+    }
+
+    public String[] getMsrBinWhitelist() {
+        return msrBinWhitelist;
+    }
+
+    public void setMsrBinWhitelist(String[] msrBinWhitelist) {
+        this.msrBinWhitelist = msrBinWhitelist;
     }
 }
