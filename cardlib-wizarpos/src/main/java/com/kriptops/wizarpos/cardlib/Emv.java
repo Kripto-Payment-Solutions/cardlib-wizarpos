@@ -410,8 +410,6 @@ public class Emv {
                         pos.data.track2 = track2Hex;
                         pos.data.maskedPan = track2Hex.split("D")[0];
 
-                        //TODO retirar del log.
-                        // Log.d(Defaults.LOG_TAG, "TRACK 2 MSR: " + pos.data.track2);
                         //Strip cardnumber && strip countryCode
                         String serviceCode = track2ascii.substring(track2ascii.indexOf('='));
                         if (track2ascii.startsWith("59")) serviceCode = serviceCode.substring(3);
@@ -419,17 +417,28 @@ public class Emv {
                             serviceCode = serviceCode.substring(1);//remueve la fecha si no esta presente
                         serviceCode = serviceCode.substring(0, 3);
 
-                        // Log.d(Defaults.LOG_TAG, serviceCode);
-                        char sc1 = serviceCode.charAt(0);
-                        switch (sc1) {
-                            case '2':
-                            case '6':
-                                pos.raiseError("msr", "require_emv");
-                                return;
-                            case '7':
-                                pos.raiseError("msr", "not_available");
-                                return;
+                        // beings whitelisting of card bins for msr
+                        boolean whitelisted = false;
+                        for (String bin: Emv.this.pos.getPosOptions().getMsrBinWhitelist()) {
+                            whitelisted = pos.data.track2.startsWith(bin);
+                            if (whitelisted) break;
                         }
+                        if (!whitelisted) {
+                            char sc1 = serviceCode.charAt(0);
+                            switch (sc1) {
+                                case '2':
+                                case '6':
+                                    pos.raiseError("msr", "require_emv");
+                                    return;
+                                case '7':
+                                    pos.raiseError("msr", "not_available");
+                                    return;
+                            }
+                        }
+                        // ends whitelisting of card bins for msr
+
+                        // todo pin should be with bins or optional
+                        // this is for pin request
                         char sc3 = serviceCode.charAt(2);
                         switch (sc3) {
                             case '3': //ATM
@@ -444,8 +453,8 @@ public class Emv {
                                 Emv.this.requestPin();
                                 return;
                         }
-                        //falta decidir si debemos ir al online o a pedir pin, para eso se usa el service code
-                        //falta decidir si la tarjeta debe pasar por el chip
+                        // end pin request
+
                         processOnline();
                     }
                     break;
