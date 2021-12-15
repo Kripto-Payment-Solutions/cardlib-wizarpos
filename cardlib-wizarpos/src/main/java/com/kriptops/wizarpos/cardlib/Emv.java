@@ -419,7 +419,7 @@ public class Emv {
 
                         // beings whitelisting of card bins for msr
                         boolean whitelisted = false;
-                        for (String bin: Emv.this.pos.getPosOptions().getMsrBinWhitelist()) {
+                        for (String bin: Emv.this.pos.getPosOptions().getMsrBinWhitelistSupplier().get()) {
                             whitelisted = pos.data.track2.startsWith(bin);
                             if (whitelisted) break;
                         }
