@@ -1,7 +1,5 @@
 package com.kriptops.wizarpos.cardlib;
 
-import androidx.core.util.Supplier;
-
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.crypto.FitMode;
@@ -24,7 +22,6 @@ public class PosOptions {
     private byte reverseProcessingCode;
     private List<AID> aidTables;
     private String[] msrBinWhitelist;
-    private Supplier<String[]> msrBinWhitelistSupplier;
 
     public IVController getIvController() {
         return ivController;
@@ -128,21 +125,11 @@ public class PosOptions {
         this.aidTables = aidTables;
     }
 
-    @Deprecated
     public String[] getMsrBinWhitelist() {
         return msrBinWhitelist;
     }
 
-    @Deprecated
     public void setMsrBinWhitelist(String[] msrBinWhitelist) {
         this.msrBinWhitelist = msrBinWhitelist;
-    }
-
-    public Supplier<String[]> getMsrBinWhitelistSupplier() {
-        return msrBinWhitelistSupplier;
-    }
-
-    public void setMsrBinWhitelistSupplier(Supplier<String[]> msrBinWhitelistSupplier) {
-        this.msrBinWhitelistSupplier = msrBinWhitelistSupplier;
     }
 }

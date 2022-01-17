@@ -1,7 +1,5 @@
 package com.kriptops.wizarpos.cardlib;
 
-import androidx.core.util.Supplier;
-
 import com.kriptops.wizarpos.cardlib.kernel.AID;
 import com.kriptops.wizarpos.cardlib.tools.Util;
 
@@ -419,7 +417,5 @@ public class Defaults {
             "474631",
             "529555"
     };
-
-    public static final Supplier<String[]> BIN_MSR_WHITELIST_SUPPLIER = () -> BIN_MSR_WHITELIST;
 
 }
