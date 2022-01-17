@@ -73,7 +73,7 @@ public class Pos {
         this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
         this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
         this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AIDS));
-        this.posOptions.setAidTables(Util.nvl(posOptions.getCapkTables(), Defaults.CAPKS));
+        this.posOptions.setCapkTables(Util.nvl(posOptions.getCapkTables(), Defaults.CAPKS));
         this.posOptions.setMsrBinWhitelistSupplier(Util.nvl(posOptions.getMsrBinWhitelistSupplier(), Defaults.BIN_MSR_WHITELIST_SUPPLIER));
 
         //debe ir antes que la creacion del emv kernel
