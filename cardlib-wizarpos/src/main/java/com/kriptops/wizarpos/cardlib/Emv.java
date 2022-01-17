@@ -71,38 +71,41 @@ public class Emv {
         pos.getMsr().setListener(new MsrListener());
         try {
             int res = EMVJNIInterface.loadEMVKernel(data, data.length);
-            //on first init res is 0
             if (res == 0) {
                 EMVJNIInterface.emv_kernel_initialize();
                 // EMVJNIInterface.emv_set_kernel_attr(new byte[]{0x20}, 1);
                 EMVJNIInterface.emv_set_kernel_attr(new byte[]{0x04,0x08}, 2);
                 EMVJNIInterface.emv_terminal_param_set_drl(new byte[]{0x00}, 1);
 
-                //TODO move to function
-                EMVJNIInterface.emv_capkparam_clear();
-                for (String capk: Defaults.CAPKS) {
-                    // Log.d(Defaults.LOG_TAG, "CAPK: " + capk);
-                    byte[] buffer = Util.toByteArray(capk);
-                    EMVJNIInterface.emv_capkparam_add(buffer, buffer.length);
-                }
+                syncCAPKS(pos.getPosOptions().getCapkTables());
 
-                //TODO move to function
-                EMVJNIInterface.emv_aidparam_clear();
-                EMVJNIInterface.emv_contactless_aidparam_clear();
-                for (String aid: Defaults.AIDS) {
-                    // Log.d(Defaults.LOG_TAG, "AID: " + aid);
-                    byte[] buffer = Util.toByteArray(aid);
-                    EMVJNIInterface.emv_aidparam_add(buffer, buffer.length);
-                    //EMVJNIInterface.emv_contactless_aidparam_add(buffer, buffer.length);
-                }
+                // TODO move to function
+                syncAIDS(pos.getPosOptions().getAidTables());
 
                 EMVJNIInterface.emv_set_force_online(EMV_READER_ONLINE_ONLY);
                 Log.i(Defaults.LOG_TAG, "kernel id:" + EMVJNIInterface.emv_get_kernel_id());
                 Log.i(Defaults.LOG_TAG, "process type:" + EMVJNIInterface.emv_get_process_type());
             }
         } catch (Exception ex) {
-            // Log.d(Defaults.LOG_TAG, "no se puede inicializar el kernel en loademv kernel");
             throw new RuntimeException("No se puede inicializar el kernel EMV", ex);
+        }
+    }
+
+    public void syncAIDS(List<String> aids) {
+        EMVJNIInterface.emv_aidparam_clear();
+        EMVJNIInterface.emv_contactless_aidparam_clear();
+        for (String aid: pos.getPosOptions().getAidTables()) {
+            byte[] buffer = Util.toByteArray(aid);
+            EMVJNIInterface.emv_aidparam_add(buffer, buffer.length);
+            //TODO separar la lista de contact de contactless
+        }
+    }
+
+    public void syncCAPKS(List<String> capks) {
+        EMVJNIInterface.emv_capkparam_clear();
+        for (String capk: capks) {
+            byte[] buffer = Util.toByteArray(capk);
+            EMVJNIInterface.emv_capkparam_add(buffer, buffer.length);
         }
     }
 
