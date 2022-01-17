@@ -35,6 +35,7 @@ public class MainApp extends Application implements PosApp {
         posOptions.setReverseProcessingCode((byte) 0x00);
         posOptions.setAidTables(Defaults.AIDS);
         posOptions.setCapkTables(Defaults.CAPKS);
+        posOptions.setMsrBinWhitelistSupplier(Defaults.BIN_MSR_WHITELIST_SUPPLIER);
 
         this.pos = new Pos(this, posOptions);
         this.pos.setPinLength(4);
