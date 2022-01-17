@@ -72,8 +72,9 @@ public class Pos {
         this.posOptions.setTrack2PaddingMode(Util.nvl(posOptions.getTrack2PaddingMode(), PaddingMode.PKCS5));
         this.posOptions.setIccTaglist(Util.nvl(posOptions.getIccTaglist(), Defaults.DEFAULT_ICC_TAGLIST));
         this.posOptions.setNfcTagList(Util.nvl(posOptions.getNfcTagList(), Defaults.DEFAULT_NFC_TAGLIST));
-        this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AID_TABLES));
-        this.posOptions.setMsrBinWhitelist(Util.nvl(posOptions.getMsrBinWhitelist(), Defaults.BIN_MSR_WHITELIST));
+        this.posOptions.setAidTables(Util.nvl(posOptions.getAidTables(), Defaults.AIDS));
+        this.posOptions.setAidTables(Util.nvl(posOptions.getCapkTables(), Defaults.CAPKS));
+        this.posOptions.setMsrBinWhitelistSupplier(Util.nvl(posOptions.getMsrBinWhitelistSupplier(), Defaults.BIN_MSR_WHITELIST_SUPPLIER));
 
         //debe ir antes que la creacion del emv kernel
         this.msr = new Msr(this.terminal.getMsr().getDevice());

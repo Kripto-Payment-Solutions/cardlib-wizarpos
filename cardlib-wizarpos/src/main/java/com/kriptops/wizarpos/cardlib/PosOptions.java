@@ -1,5 +1,7 @@
 package com.kriptops.wizarpos.cardlib;
 
+import androidx.core.util.Supplier;
+
 import com.kriptops.wizarpos.cardlib.crypto.PaddingMode;
 import com.kriptops.wizarpos.cardlib.db.IVController;
 import com.kriptops.wizarpos.cardlib.crypto.FitMode;
@@ -20,8 +22,10 @@ public class PosOptions {
     private int[] nfcTagList;
     private byte authProcessingCode;
     private byte reverseProcessingCode;
-    private List<AID> aidTables;
+    private List<String> aidTables;
+    private List<String> capkTables;
     private String[] msrBinWhitelist;
+    private Supplier<String[]> msrBinWhitelistSupplier;
 
     public IVController getIvController() {
         return ivController;
@@ -117,19 +121,37 @@ public class PosOptions {
         this.reverseProcessingCode = reverseProcessingCode;
     }
 
-    public List<AID> getAidTables() {
+    public List<String> getAidTables() {
         return aidTables;
     }
 
-    public void setAidTables(List<AID> aidTables) {
+    public void setAidTables(List<String> aidTables) {
         this.aidTables = aidTables;
     }
 
+    @Deprecated
     public String[] getMsrBinWhitelist() {
         return msrBinWhitelist;
     }
 
+    @Deprecated
     public void setMsrBinWhitelist(String[] msrBinWhitelist) {
         this.msrBinWhitelist = msrBinWhitelist;
+    }
+
+    public List<String> getCapkTables() {
+        return capkTables;
+    }
+
+    public void setCapkTables(List<String> capkTables) {
+        this.capkTables = capkTables;
+    }
+
+    public Supplier<String[]> getMsrBinWhitelistSupplier() {
+        return msrBinWhitelistSupplier;
+    }
+
+    public void setMsrBinWhitelistSupplier(Supplier<String[]> msrBinWhitelistSupplier) {
+        this.msrBinWhitelistSupplier = msrBinWhitelistSupplier;
     }
 }

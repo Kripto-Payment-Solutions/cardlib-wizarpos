@@ -33,7 +33,9 @@ public class MainApp extends Application implements PosApp {
         posOptions.setTrack2PaddingMode(PaddingMode.PKCS5);
         posOptions.setAuthProcessingCode((byte) 0x00);
         posOptions.setReverseProcessingCode((byte) 0x00);
-        posOptions.setAidTables(Defaults.AID_TABLES);
+        posOptions.setAidTables(Defaults.AIDS);
+        posOptions.setCapkTables(Defaults.CAPKS);
+        posOptions.setMsrBinWhitelistSupplier(Defaults.BIN_MSR_WHITELIST_SUPPLIER);
 
         this.pos = new Pos(this, posOptions);
         this.pos.setPinLength(4);
